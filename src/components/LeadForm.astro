@@ -1,5 +1,6 @@
 ---
-// One short form for every inquiry. Visitors leave a name and number; Sanjay calls back.
+// One short form for every inquiry. It asks only for what that inquiry needs: a name and
+// one way to reach the visitor are required, everything else is optional. Sanjay calls back.
 // Every submission says in plain words what the visitor asked for (`request`), so he
 // knows the reason before he picks up the phone.
 // Submissions POST as JSON to site.formEndpoint; while that is empty the form
@@ -35,26 +36,32 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
     <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
   </p>
 
-  <div class="field">
-    <label for={`${uid}-name`}>Your name</label>
-    <input id={`${uid}-name`} name="name" type="text" autocomplete="name" required />
-  </div>
-
   <div class="row">
     <div class="field">
-      <label for={`${uid}-phone`}>Phone number</label>
-      <input id={`${uid}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+      <label for={`${uid}-name`}>Your name <span class="opt">(first name is fine)</span></label>
+      <input id={`${uid}-name`} name="name" type="text" autocomplete="given-name" required />
     </div>
     <div class="field">
-      <label for={`${uid}-email`}>Email <span class="opt">(optional)</span></label>
-      <input id={`${uid}-email`} name="email" type="email" autocomplete="email" />
+      <label for={`${uid}-reach`}>Phone or email</label>
+      <input
+        id={`${uid}-reach`}
+        name="reach"
+        type="text"
+        autocomplete="tel"
+        required
+        data-reach
+        aria-describedby={`${uid}-reach-hint`}
+      />
+      <span class="hint" id={`${uid}-reach-hint`}>Whichever you prefer Sanjay to use.</span>
     </div>
   </div>
 
   {
     kind === 'contact' && (
       <div class="field">
-        <label for={`${uid}-topic`}>What can Sanjay help you with?</label>
+        <label for={`${uid}-topic`}>
+          What is it about? <span class="opt">(optional)</span>
+        </label>
         <select id={`${uid}-topic`} name="topic">
           <option value="">Please choose</option>
           {topics.map((t) => (
@@ -68,9 +75,11 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
   {
     kind === 'buyer-seller' && (
       <fieldset class="field choice">
-        <legend>I am looking to</legend>
+        <legend>
+          I am looking to <span class="opt">(optional)</span>
+        </legend>
         <label>
-          <input type="radio" name="interest" value="Buy" checked /> Buy
+          <input type="radio" name="interest" value="Buy" /> Buy
         </label>
         <label>
           <input type="radio" name="interest" value="Sell" /> Sell
@@ -85,8 +94,19 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
   {
     kind === 'valuation' && (
       <div class="field">
-        <label for={`${uid}-address`}>Property address</label>
-        <input id={`${uid}-address`} name="propertyAddress" type="text" autocomplete="street-address" required />
+        <label for={`${uid}-address`}>
+          Which property? <span class="opt">(optional)</span>
+        </label>
+        <input
+          id={`${uid}-address`}
+          name="propertyAddress"
+          type="text"
+          autocomplete="off"
+          aria-describedby={`${uid}-address-hint`}
+        />
+        <span class="hint" id={`${uid}-address-hint`}>
+          The street or neighborhood is enough. Sanjay will ask the rest when he gets in touch.
+        </span>
       </div>
     )
   }
@@ -99,18 +119,24 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
     <textarea id={`${uid}-msg`} name="message" rows="3"></textarea>
   </div>
 
+  <p class="private">Only Sanjay sees this. It is never shared or sold.</p>
+
   <button class="btn" type="submit">{submitLabel}</button>
 
   <p class="status" role="status" aria-live="polite"></p>
 
   <p class="note fine">
-    Sanjay will call or email you back using these details. See the{' '}
+    Sanjay will contact you using the details above. See the{' '}
     <a href="/privacy/">privacy policy</a>. {licenseLine}.
   </p>
 </form>
 
 <script>
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    form.querySelector<HTMLInputElement>('[data-reach]')?.addEventListener('input', (event) => {
+      (event.target as HTMLInputElement).setCustomValidity('');
+    });
+
     const status = form.querySelector<HTMLElement>('.status')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
 
@@ -118,6 +144,11 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
       event.preventDefault();
       status.textContent = '';
       status.className = 'status';
+
+      const reach = form.querySelector<HTMLInputElement>('[data-reach]')!;
+      const value = reach.value.trim();
+      const looksReachable = value.includes('@') || value.replace(/\D/g, '').length >= 7;
+      reach.setCustomValidity(value && !looksReachable ? 'Please enter a phone number or an email address.' : '');
 
       if (!form.checkValidity()) {
         form.reportValidity();
@@ -134,8 +165,7 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
         ['Wants to', data.interest],
         ['Property', data.propertyAddress ?? data.regarding],
         ['Name', data.name],
-        ['Phone', data.phone],
-        ['Email', data.email],
+        ['Phone or email', data.reach],
         ['Message', data.message],
       ];
       const filled = fields.filter(([, value]) => value) as [string, string][];
@@ -164,7 +194,7 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
         });
         if (!response.ok) throw new Error(String(response.status));
         form.reset();
-        status.textContent = 'Thank you. Sanjay has your details and will call you back.';
+        status.textContent = 'Thank you. Sanjay has your message and will be in touch.';
         status.classList.add('is-ok');
       } catch {
         status.textContent = `Sorry, that did not send. Please email ${form.dataset.email} instead.`;
@@ -218,6 +248,17 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
   .opt {
     font-weight: 400;
     color: var(--ink-soft);
+  }
+
+  .hint {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  .private {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 
   input[type='text'],
