@@ -1,0 +1,98 @@
+---
+import ListingImage from './ListingImage.astro';
+import { type Listing, categoryLabel, statusLabel, usd, facts } from '../lib/content';
+
+interface Props {
+  listing: Listing;
+}
+const { listing } = Astro.props;
+---
+
+<article class="listing" data-category={listing.category}>
+  <a class="media" href={`/properties/${listing.id}/`} tabindex="-1" aria-hidden="true">
+    <ListingImage listing={listing} />
+  </a>
+  <div class="body">
+    <p class="tags">
+      <span class={`tag tag--${listing.status}`}>{statusLabel[listing.status]}</span>
+      <span class="kind">{categoryLabel[listing.category]}</span>
+      {listing.sample && <span class="tag tag--sample">Sample</span>}
+    </p>
+    <p class="price">{usd(listing.price)}</p>
+    <h3>
+      <a href={`/properties/${listing.id}/`}>{listing.address}</a>
+    </h3>
+    <p class="city">{listing.city}, CA</p>
+    <p class="facts">{facts(listing)}</p>
+    {listing.photosAltered && <p class="note">Some photos are digitally altered.</p>}
+  </div>
+</article>
+
+<style>
+  .listing {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .media {
+    display: block;
+  }
+
+  .body {
+    padding: 1.1rem 1.25rem 1.3rem;
+  }
+
+  .body p {
+    margin: 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem !important;
+  }
+
+  .kind {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .price {
+    font: 500 1.6rem/1.2 var(--serif);
+  }
+
+  h3 {
+    font: 600 1.05rem/1.35 var(--sans);
+    letter-spacing: 0;
+    margin: 0.35rem 0 0;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .city,
+  .facts {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .facts {
+    margin-top: 0.5rem !important;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--line);
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import ListingCard from '../components/ListingCard.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../config/site';
+import { listings } from '../lib/content';
+
+const matches = listings.filter((l) => l.category === 'land' || l.category === 'investment');
+---
+
+<Base
+  title="Land and investment properties"
+  description={`Land, lots and income property represented by ${site.brokerName} in ${site.areas.join(', ')}.`}
+>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Land and investment properties</p>
+      <h1>Land, lots and income property</h1>
+      <p class="lead">
+        These purchases turn on details a house sale never raises. Sanjay helps you find them before you commit.
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap grid grid--2">
+      <div class="card">
+        <h2>Buying land</h2>
+        <p>Before an offer, Sanjay helps you line up the questions that decide what a parcel is really worth:</p>
+        <ul>
+          <li>Zoning and what may be built</li>
+          <li>Legal access and easements</li>
+          <li>Water, sewer or septic, and power</li>
+          <li>Surveys, boundaries and title</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Buying income property</h2>
+        <p>For rentals and multi-unit buildings, the numbers are checked against documents, not estimates:</p>
+        <ul>
+          <li>Rent rolls and existing leases</li>
+          <li>Actual operating expenses</li>
+          <li>Local rental rules that apply</li>
+          <li>Condition and deferred maintenance</li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap">
+      <p class="note caution">
+        Nothing on this site is a promise of investment return, tax advice or legal advice. Zoning, permitted use,
+        income and expenses are for the buyer to verify with the relevant agency and their own advisors.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="wrap">
+      <p class="eyebrow">Available now</p>
+      <h2>Land and investment listings</h2>
+      {
+        matches.length > 0 ? (
+          <div class="grid grid--3">
+            {matches.map((listing) => (
+              <ListingCard listing={listing} />
+            ))}
+          </div>
+        ) : (
+          <p>No land or investment listings are posted right now. Ask Sanjay what is coming up.</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Inquire</p>
+        <h2>Looking for a parcel or an income property?</h2>
+        <p>Describe what you have in mind: location, size, budget and how you plan to use it.</p>
+      </div>
+      <LeadForm kind="buyer-seller" submitLabel="Send inquiry" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .card h2 {
+    font-size: 1.5rem;
+  }
+
+  .card ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .card li::marker {
+    color: var(--brass);
+  }
+
+  .caution {
+    margin-top: 1.5rem;
+    max-width: 75ch;
+  }
+</style>

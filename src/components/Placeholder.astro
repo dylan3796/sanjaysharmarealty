@@ -1,0 +1,12 @@
+---
+// A visible "content needed" marker. `npm run check:launch` fails while any remain.
+interface Props {
+  label?: string;
+}
+const { label = 'Content needed' } = Astro.props;
+---
+
+<div class="placeholder" data-placeholder>
+  <strong>{label}</strong>
+  <slot />
+</div>

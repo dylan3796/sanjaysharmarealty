@@ -1,0 +1,76 @@
+---
+// Headline figures are totalled from src/data/sales.json at build time.
+import { trackRecord, usd, num } from '../lib/content';
+import { site } from '../config/site';
+
+const t = trackRecord();
+const asOf = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+---
+
+<div class="track">
+<dl class="stats">
+  <div>
+    <dt>Years in California real estate</dt>
+    <dd>{site.yearsExperience}</dd>
+  </div>
+  {
+    t.count > 0 && (
+      <>
+        <div>
+          <dt>Sales closed, {t.from === t.to ? t.from : `${t.from} to ${t.to}`}</dt>
+          <dd>{num(t.count)}</dd>
+        </div>
+        <div>
+          <dt>Total sales volume</dt>
+          <dd>{usd(t.volume)}</dd>
+        </div>
+      </>
+    )
+  }
+</dl>
+{
+  t.count > 0 && (
+    <p class="note source">
+      Figures as of {asOf}, from {site.brokerName}'s own closed transactions.
+      {t.hasSamples && <span class="tag tag--sample">Sample figures</span>}
+    </p>
+  )
+}
+</div>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1.5rem 2rem;
+    margin: 0;
+  }
+
+  .stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    border-top: 2px solid var(--brass-bright);
+    padding-top: 0.8rem;
+  }
+
+  dt {
+    font-size: 0.95rem;
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  dd {
+    margin: 0;
+    font: 500 clamp(2rem, 5vw, 3rem) / 1.1 var(--serif);
+  }
+
+  .source {
+    margin: 1.25rem 0 0;
+    color: inherit;
+    opacity: 0.85;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+</style>

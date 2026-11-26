@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import Headshot from '../components/Headshot.astro';
+import Placeholder from '../components/Placeholder.astro';
+import TrackRecord from '../components/TrackRecord.astro';
+import ContactCta from '../components/ContactCta.astro';
+import { site } from '../config/site';
+import { sales, usd } from '../lib/content';
+---
+
+<Base
+  title="About"
+  description={`About ${site.brokerName}, an independent California real estate broker with ${site.yearsExperience} years of experience.`}
+>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">About</p>
+      <h1>{site.brokerName}</h1>
+      <p class="lead">
+        Independent real estate broker, licensed in California, with {site.yearsExperience} years of experience.
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap split split--wide-left">
+      <div>
+        <h2>{site.tagline}</h2>
+        <p>
+          Sanjay works as an independent broker. Clients deal with him directly at every step, from the first meeting to
+          the day escrow closes, and his advice is not shaped by a franchise or a sales quota.
+        </p>
+        <Placeholder label="Biography needed">
+          Two or three short paragraphs in Sanjay's own words: how he started, the kinds of clients and properties he
+          works with, and what he is known for. Add awards and designations here, each with its year and awarding body.
+        </Placeholder>
+
+        <h3>What the three words mean in practice</h3>
+        <ul class="values">
+          <li>
+            <strong>Experience.</strong> He has priced, marketed and negotiated property through rising and falling
+            markets, and knows what each one asks of a seller or buyer.
+          </li>
+          <li>
+            <strong>Integrity.</strong> You get his honest view of value and risk, including when it is not what you hoped
+            to hear.
+          </li>
+          <li>
+            <strong>Results.</strong> His past sales are listed below, so you can judge the record for yourself.
+          </li>
+        </ul>
+
+        <h3>License</h3>
+        <p>
+          California Department of Real Estate broker license #{site.dreNumber}. {site.independentStatement}
+        </p>
+      </div>
+      <Headshot />
+    </div>
+  </section>
+
+  <section class="section section--navy" id="track-record">
+    <div class="wrap">
+      <p class="eyebrow">Track record</p>
+      <h2>Past sales</h2>
+      <TrackRecord />
+    </div>
+  </section>
+
+  {
+    sales.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <h2>Transaction history</h2>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Year</th>
+                  <th scope="col">City</th>
+                  <th scope="col">Property</th>
+                  <th scope="col">Represented</th>
+                  <th scope="col" class="num">
+                    Sale price
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sales.map((sale) => (
+                  <tr>
+                    <td>{sale.year}</td>
+                    <td>{sale.city}</td>
+                    <td>
+                      {sale.type} {sale.sample && <span class="tag tag--sample">Sample</span>}
+                    </td>
+                    <td>{sale.side}</td>
+                    <td class="num">{usd(sale.price)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <ContactCta />
+</Base>
+
+<style>
+  .values {
+    padding-left: 1.1rem;
+    margin: 0 0 1.75rem;
+    display: grid;
+    gap: 0.6rem;
+    max-width: 65ch;
+  }
+
+  .values li::marker {
+    color: var(--brass);
+  }
+
+  h3 {
+    margin-top: 1.75rem;
+  }
+</style>

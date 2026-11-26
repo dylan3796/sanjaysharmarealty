@@ -1,0 +1,332 @@
+---
+// One form for every inquiry type. Fields change with `kind`.
+// Submissions POST as JSON to site.formEndpoint; while that is empty the form
+// opens the visitor's email app with the message filled in.
+import { site, licenseLine } from '../config/site';
+
+interface Props {
+  kind: 'contact' | 'buyer-seller' | 'valuation' | 'listing';
+  /** Shown to the broker, e.g. the listing address. */
+  subject?: string;
+  submitLabel?: string;
+}
+
+const { kind, subject = '', submitLabel = 'Send message' } = Astro.props;
+const uid = `f-${kind}`;
+const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '6 to 12 months', 'Just exploring'];
+---
+
+<form
+  class="lead-form"
+  data-lead-form
+  data-kind={kind}
+  data-endpoint={site.formEndpoint}
+  data-email={site.email}
+  novalidate
+>
+  <input type="hidden" name="form" value={kind} />
+  {subject && <input type="hidden" name="regarding" value={subject} />}
+  <p class="hp" aria-hidden="true">
+    <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <div class="row">
+    <div class="field">
+      <label for={`${uid}-name`}>Full name</label>
+      <input id={`${uid}-name`} name="name" type="text" autocomplete="name" required />
+    </div>
+    <div class="field">
+      <label for={`${uid}-phone`}>Phone <span class="opt">(optional)</span></label>
+      <input id={`${uid}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for={`${uid}-email`}>Email</label>
+    <input id={`${uid}-email`} name="email" type="email" autocomplete="email" required />
+  </div>
+
+  {
+    kind === 'buyer-seller' && (
+      <>
+        <fieldset class="field choice">
+          <legend>I am looking to</legend>
+          <label>
+            <input type="radio" name="interest" value="Buy" checked /> Buy
+          </label>
+          <label>
+            <input type="radio" name="interest" value="Sell" /> Sell
+          </label>
+          <label>
+            <input type="radio" name="interest" value="Buy and sell" /> Both
+          </label>
+        </fieldset>
+        <div class="row">
+          <div class="field">
+            <label for={`${uid}-area`}>
+              Area or property address <span class="opt">(optional)</span>
+            </label>
+            <input id={`${uid}-area`} name="area" type="text" />
+          </div>
+          <div class="field">
+            <label for={`${uid}-budget`}>
+              Price range <span class="opt">(optional)</span>
+            </label>
+            <input id={`${uid}-budget`} name="priceRange" type="text" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  {
+    kind === 'valuation' && (
+      <>
+        <div class="field">
+          <label for={`${uid}-address`}>Property address</label>
+          <input id={`${uid}-address`} name="propertyAddress" type="text" autocomplete="street-address" required />
+        </div>
+        <div class="row row--3">
+          <div class="field">
+            <label for={`${uid}-beds`}>
+              Bedrooms <span class="opt">(optional)</span>
+            </label>
+            <input id={`${uid}-beds`} name="beds" type="number" min="0" max="20" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for={`${uid}-baths`}>
+              Bathrooms <span class="opt">(optional)</span>
+            </label>
+            <input id={`${uid}-baths`} name="baths" type="number" min="0" max="20" step="0.5" inputmode="decimal" />
+          </div>
+          <div class="field">
+            <label for={`${uid}-sqft`}>
+              Square feet <span class="opt">(optional)</span>
+            </label>
+            <input id={`${uid}-sqft`} name="sqft" type="number" min="0" inputmode="numeric" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  {
+    (kind === 'buyer-seller' || kind === 'valuation') && (
+      <div class="field">
+        <label for={`${uid}-when`}>Timeframe</label>
+        <select id={`${uid}-when`} name="timeframe">
+          {timeframes.map((t) => (
+            <option>{t}</option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+
+  <div class="field">
+    <label for={`${uid}-msg`}>
+      {kind === 'valuation' ? 'Anything else about the property' : 'Message'}
+      {kind !== 'contact' && <span class="opt"> (optional)</span>}
+    </label>
+    <textarea id={`${uid}-msg`} name="message" rows="4" required={kind === 'contact'}></textarea>
+  </div>
+
+  <label class="check">
+    <input type="checkbox" name="textOk" value="yes" />
+    <span>
+      It is fine to text me at the number above about my inquiry. Message and data rates may apply. Consent is not a
+      condition of any service.
+    </span>
+  </label>
+
+  <button class="btn" type="submit">{submitLabel}</button>
+
+  <p class="status" role="status" aria-live="polite"></p>
+
+  <p class="note fine">
+    By sending this form you agree that {site.brokerName} may contact you by phone or email about your inquiry. See the{' '}
+    <a href="/privacy/">privacy policy</a>. {licenseLine}.
+  </p>
+</form>
+
+<script>
+  const label = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
+
+  document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.textContent = '';
+      status.className = 'status';
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+      if (data.company) return; // honeypot: bots fill it, people never see it
+      delete data.company;
+
+      const endpoint = form.dataset.endpoint;
+
+      if (!endpoint) {
+        // No form service configured yet: hand the message to the visitor's email app.
+        const lines = Object.entries(data)
+          .filter(([key, value]) => value && key !== 'form')
+          .map(([key, value]) => `${label(key)}: ${value}`);
+        const subject = `Website inquiry (${data.form}) from ${data.name}`;
+        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+        status.textContent = 'Your email app should now open with the message ready to send.';
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ ...data, page: window.location.pathname }),
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        status.textContent = 'Thank you. Your message has been sent and Sanjay will be in touch shortly.';
+        status.classList.add('is-ok');
+      } catch {
+        status.textContent = `Sorry, the message could not be sent. Please call or email ${form.dataset.email} instead.`;
+        status.classList.add('is-error');
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .lead-form {
+    display: grid;
+    gap: 1.1rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--brass-bright);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 3.5vw, 2rem);
+    color: var(--ink);
+  }
+
+  .hp {
+    position: absolute;
+    left: -999rem;
+  }
+
+  .row {
+    display: grid;
+    gap: 1.1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+
+  .row--3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  label,
+  legend {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0;
+  }
+
+  .opt {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  input[type='text'],
+  input[type='tel'],
+  input[type='email'],
+  input[type='number'],
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.8rem;
+    border: 1.5px solid #b9b09c;
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  .choice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .choice legend {
+    width: 100%;
+    margin-bottom: 0.35rem;
+  }
+
+  .choice label,
+  .check {
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+    font-weight: 400;
+  }
+
+  .check {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--navy);
+    flex: none;
+  }
+
+  .btn {
+    justify-self: start;
+  }
+
+  .status {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .status:empty {
+    display: none;
+  }
+
+  .status.is-ok {
+    color: var(--good);
+  }
+
+  .status.is-error {
+    color: #9b2c1f;
+  }
+
+  .fine {
+    margin: 0;
+  }
+</style>

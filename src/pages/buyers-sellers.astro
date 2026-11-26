@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../config/site';
+---
+
+<Base
+  title="Buyers and sellers"
+  description={`How ${site.brokerName} works with home buyers and sellers in ${site.areas.join(', ')}.`}
+>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Buyers and sellers</p>
+      <h1>Clear advice, whichever side of the sale you are on</h1>
+      <p class="lead">
+        The steps below show what working with Sanjay looks like. Every transaction is handled by him personally.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" id="sellers">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">For sellers</p>
+        <h2>Selling your property</h2>
+        <p>
+          A sale goes well when the price is right from the first day and the property is shown at its best. Sanjay
+          handles both, and keeps you informed throughout.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="/valuation/">Start with a valuation</a>
+        </div>
+      </div>
+      <ol class="steps">
+        <li>
+          <div>
+            <h3>Valuation</h3>
+            <p>A written opinion of value based on recent comparable sales and the condition of your property.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Preparation</h3>
+            <p>Practical advice on repairs, staging and timing: what is worth doing and what is not.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Marketing</h3>
+            <p>Professional photography, the MLS and the major property websites, plus direct outreach.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Offers and negotiation</h3>
+            <p>Each offer is explained in plain terms: price, contingencies, financing strength and timing.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Escrow to closing</h3>
+            <p>Disclosures, inspections and deadlines are tracked so nothing is left to the last minute.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--deep" id="buyers">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">For buyers</p>
+        <h2>Buying a home</h2>
+        <p>
+          Buying is easier with someone who will tell you plainly what a property is worth and what could go wrong with
+          it. That is the job.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="/properties/">View properties</a>
+        </div>
+      </div>
+      <ol class="steps">
+        <li>
+          <div>
+            <h3>First conversation</h3>
+            <p>Your budget, areas, must-haves and timing, and how the purchase process works in California.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Financing</h3>
+            <p>Getting pre-approved with a lender of your choice, so your offer is taken seriously.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Search and viewings</h3>
+            <p>Properties that fit, with an honest view of each one's value and condition.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Offer</h3>
+            <p>Price and terms chosen from comparable sales, and negotiated on your behalf.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Inspections to keys</h3>
+            <p>Inspections, disclosures, appraisal and loan milestones, managed through to closing.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="inquire">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Start here</p>
+        <h2>Tell Sanjay what you are planning</h2>
+        <p>
+          A few details are enough to begin. He replies personally, usually the same business day.
+        </p>
+        <p>
+          Prefer to talk? Call <a href={site.phone.href}>{site.phone.display}</a>.
+        </p>
+      </div>
+      <LeadForm kind="buyer-seller" submitLabel="Send inquiry" />
+    </div>
+  </section>
+</Base>

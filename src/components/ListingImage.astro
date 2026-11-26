@@ -1,0 +1,41 @@
+---
+import type { Listing } from '../lib/content';
+
+interface Props {
+  listing: Listing;
+  index?: number;
+}
+const { listing, index = 0 } = Astro.props;
+const src = listing.photos[index];
+const alt = `${listing.address}, ${listing.city}`;
+---
+
+{
+  src ? (
+    <img class="photo" src={src} alt={alt} loading="lazy" />
+  ) : (
+    <svg class="photo" viewBox="0 0 400 260" role="img" aria-label={`No photo yet for ${alt}`}>
+      <rect width="400" height="260" fill="#e4dccb" />
+      {listing.category === 'land' ? (
+        <g fill="none" stroke="#84652b" stroke-width="3" stroke-linejoin="round">
+          <path d="M0 200 110 120l60 45 70-70 160 120" />
+          <circle cx="310" cy="70" r="20" />
+        </g>
+      ) : (
+        <g fill="none" stroke="#84652b" stroke-width="3" stroke-linejoin="round">
+          <path d="M120 200v-75l80-58 80 58v75z" />
+          <path d="M180 200v-45h40v45M100 138l100-72 100 72" />
+        </g>
+      )}
+    </svg>
+  )
+}
+
+<style>
+  .photo {
+    width: 100%;
+    aspect-ratio: 20 / 13;
+    object-fit: cover;
+    background: var(--paper-deep);
+  }
+</style>

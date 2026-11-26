@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../config/site';
+---
+
+<Base
+  title="Property valuation"
+  description={`Request a free opinion of value for your property from ${site.brokerName}.`}
+>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Property valuation</p>
+      <h1>What is your property worth?</h1>
+      <p class="lead">
+        A personal opinion of value from a broker with {site.yearsExperience} years in the market. Free, with no
+        obligation.
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <div>
+              <h3>Send the address</h3>
+              <p>Add whatever details you know. Recent upgrades and condition matter.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>Sanjay studies the market</h3>
+              <p>He compares your property with recent nearby sales and current competition.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>You get a price range</h3>
+              <p>With the reasoning behind it, and what would move the figure up or down.</p>
+            </div>
+          </li>
+        </ol>
+        <p class="note disclaimer">
+          A broker's opinion of value is not an appraisal. It is an estimate of likely selling price for marketing
+          purposes and may not be used for lending.
+        </p>
+      </div>
+      <LeadForm kind="valuation" submitLabel="Request valuation" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .disclaimer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+// Appears only once an IDX account exists and site.idx.searchUrl is set.
+import { site } from '../config/site';
+---
+
+{
+  site.idx.searchUrl && (
+    <div class="card idx">
+      <div>
+        <h3>Search every home on the market</h3>
+        <p>
+          Browse all {site.idx.mlsName} listings, save searches and get email alerts when a matching property comes up.
+        </p>
+      </div>
+      <a class="btn" href={site.idx.searchUrl}>
+        Search the MLS
+      </a>
+    </div>
+  )
+}
+
+<style>
+  .idx {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .idx p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+</style>

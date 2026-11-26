@@ -1,0 +1,101 @@
+---
+import Base from '../../layouts/Base.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import IdxSlot from '../../components/IdxSlot.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { site } from '../../config/site';
+import { listings, categoryLabel, type ListingCategory } from '../../lib/content';
+
+const categories = [...new Set(listings.map((l) => l.category))] as ListingCategory[];
+---
+
+<Base title="Properties for sale" description={`Homes, land and investment property listed by ${site.brokerName}.`}>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Properties for sale</p>
+      <h1>Sanjay's current listings</h1>
+      <p class="lead">Homes, land and investment property represented by {site.brokerName}.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      {
+        listings.length === 0 ? (
+          <div class="card">
+            <h2>No listings are posted right now</h2>
+            <p>
+              New properties are added as they come to market. Call {site.phone.display} or
+              <a href="/contact/">send a message</a> to hear about upcoming listings first.
+            </p>
+          </div>
+        ) : (
+          <>
+            {categories.length > 1 && (
+              <div class="filters" role="group" aria-label="Filter listings by type">
+                <button type="button" class="chip" data-filter="all" aria-pressed="true">
+                  All
+                </button>
+                {categories.map((c) => (
+                  <button type="button" class="chip" data-filter={c} aria-pressed="false">
+                    {categoryLabel[c]}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div class="grid grid--3" id="listing-grid">
+              {listings.map((listing) => (
+                <ListingCard listing={listing} />
+              ))}
+            </div>
+          </>
+        )
+      }
+      <IdxSlot />
+    </div>
+  </section>
+
+  <ContactCta
+    heading="Looking for something specific?"
+    text="Tell Sanjay what you need and he will watch the market for it."
+  />
+</Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const cards = document.querySelectorAll<HTMLElement>('#listing-grid [data-category]');
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const filter = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      cards.forEach((card) => {
+        card.hidden = filter !== 'all' && card.dataset.category !== filter;
+      });
+    }),
+  );
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .chip {
+    min-height: 2.75rem;
+    padding: 0.45rem 1.1rem;
+    border: 1.5px solid var(--navy);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--navy);
+    font: 600 0.95rem/1.2 var(--sans);
+    cursor: pointer;
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--navy);
+    color: var(--on-navy);
+  }
+</style>

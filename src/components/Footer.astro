@@ -1,0 +1,162 @@
+---
+import { site, nav, licenseLine } from '../config/site';
+
+const year = new Date().getFullYear();
+const socials = Object.entries(site.social).filter(([, url]) => url);
+const socialLabel: Record<string, string> = {
+  zillow: 'Zillow',
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  linkedin: 'LinkedIn',
+  google: 'Google reviews',
+};
+---
+
+<footer class="site-footer">
+  <div class="wrap top">
+    <div>
+      <p class="name">{site.brokerName}</p>
+      <p class="tagline">{site.tagline}</p>
+      <p class="contact">
+        <a href={site.phone.href}>{site.phone.display}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+      {
+        socials.length > 0 && (
+          <ul class="social">
+            {socials.map(([key, url]) => (
+              <li>
+                <a href={url} rel="noopener">
+                  {socialLabel[key] ?? key}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <nav aria-label="Footer">
+      <ul class="links">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="eho">
+      <svg width="54" height="54" viewBox="0 0 64 64" role="img" aria-label="Equal Housing Opportunity">
+        <path d="M32 6 4 26v6h6v24h44V32h6v-6L32 6zm14 44H18V27.5L32 17l14 10.5V50z" fill="currentColor"></path>
+        <path d="M24 31h16v5H24zm0 8h16v5H24z" fill="currentColor"></path>
+      </svg>
+      <p>
+        Equal Housing Opportunity. {site.brokerName} supports the Fair Housing Act and California fair housing law.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap legal">
+    <p class="license">{licenseLine}</p>
+    <p>{site.independentStatement}</p>
+    <p>
+      Serving {site.areas.join(', ')} and surrounding California communities. Information on this site is believed
+      accurate but is not guaranteed; buyers should verify all details.
+    </p>
+    <p>
+      © {year}{' '}{site.brokerName} · <a href="/privacy/">Privacy policy</a> · <a href="/accessibility/">Accessibility</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--navy);
+    color: var(--on-navy);
+    padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
+    /* One size for all footer text, so the license line is never the smallest. */
+    font-size: 0.9375rem;
+  }
+
+  .site-footer p {
+    max-width: 60ch;
+  }
+
+  .top {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  }
+
+  .name {
+    font: 600 1.5rem/1.1 var(--serif);
+    margin-bottom: 0.3rem;
+  }
+
+  .tagline {
+    color: var(--brass-bright);
+    letter-spacing: 0.04em;
+  }
+
+  .contact a {
+    text-decoration: none;
+  }
+
+  .contact a:hover {
+    text-decoration: underline;
+  }
+
+  .links,
+  .social {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+
+  .links a {
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+
+  .eho {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    color: var(--on-navy-soft);
+  }
+
+  .eho p {
+    margin: 0;
+  }
+
+  .legal {
+    padding-top: 1.75rem;
+    color: var(--on-navy-soft);
+  }
+
+  .legal p {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal .license {
+    color: var(--on-navy);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import Placeholder from '../components/Placeholder.astro';
+import { site } from '../config/site';
+---
+
+<Base title="Privacy policy">
+  <div class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Privacy policy</p>
+      <h1>How your information is used</h1>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap prose">
+      <Placeholder label="Review needed before launch">
+        This is a starting draft. Update it to name the actual form, scheduling and IDX services once they are chosen,
+        add an effective date, and have it reviewed.
+      </Placeholder>
+
+      <h2>What is collected</h2>
+      <p>
+        When you send a form on this site, {site.brokerName} receives what you enter: your name, email address, phone
+        number, and any property details or message you include.
+      </p>
+
+      <h2>How it is used</h2>
+      <p>
+        Your information is used to respond to your inquiry and to provide real estate services you ask for. It is not
+        sold. It is shared only with service providers that operate this site's forms and scheduling, and only so they
+        can deliver your message.
+      </p>
+
+      <h2>Calls, emails and texts</h2>
+      <p>
+        Sending a form means Sanjay may reply by phone or email. Text messages are sent only if you check the box that
+        allows them. You can ask to stop any of these at any time.
+      </p>
+
+      <h2>Your choices</h2>
+      <p>
+        To see, correct or delete the information held about you, email
+        <a href={`mailto:${site.email}`}>{site.email}</a> or call
+        <a href={site.phone.href}>{site.phone.display}</a>.
+      </p>
+
+      <h2>Do Not Track</h2>
+      <p>This site does not track visitors across other websites and does not respond differently to Do Not Track signals.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .prose h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+</style>

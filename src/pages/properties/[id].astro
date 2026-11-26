@@ -1,0 +1,175 @@
+---
+import Base from '../../layouts/Base.astro';
+import ListingImage from '../../components/ListingImage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { site, licenseLine } from '../../config/site';
+import { listings, categoryLabel, statusLabel, usd, num, type Listing } from '../../lib/content';
+
+export function getStaticPaths() {
+  return listings.map((listing) => ({ params: { id: listing.id }, props: { listing } }));
+}
+
+interface Props {
+  listing: Listing;
+}
+const { listing } = Astro.props;
+const place = `${listing.address}, ${listing.city}, CA`;
+
+const details = [
+  ['Type', categoryLabel[listing.category]],
+  ['Bedrooms', listing.beds],
+  ['Bathrooms', listing.baths],
+  ['Living area', listing.sqft != null ? `${num(listing.sqft)} sq ft` : null],
+  ['Lot', listing.acres != null ? `${listing.acres} acres` : null],
+  ['MLS number', listing.mlsNumber || null],
+].filter(([, value]) => value != null) as [string, string | number][];
+---
+
+<Base title={place} description={`${listing.headline}. ${usd(listing.price)}. Listed by ${site.brokerName}.`}>
+  <div class="wrap top">
+    <p><a href="/properties/">&larr; All properties</a></p>
+  </div>
+
+  <section class="wrap split split--wide-left detail">
+    <div>
+      <div class="gallery">
+        <ListingImage listing={listing} />
+        {
+          listing.photos.length > 1 && (
+            <div class="thumbs">
+              {listing.photos.slice(1).map((_, i) => (
+                <ListingImage listing={listing} index={i + 1} />
+              ))}
+            </div>
+          )
+        }
+      </div>
+      {
+        listing.photosAltered && (
+          <p class="note altered">
+            One or more photos of this property have been digitally altered (for example, virtual staging).
+            {listing.originalPhotosUrl && (
+              <a href={listing.originalPhotosUrl} rel="noopener">
+                View the unaltered originals
+              </a>
+            )}
+          </p>
+        )
+      }
+
+      <p class="tags">
+        <span class={`tag tag--${listing.status}`}>{statusLabel[listing.status]}</span>
+        {listing.sample && <span class="tag tag--sample">Sample listing</span>}
+      </p>
+      <h1>{listing.address}</h1>
+      <p class="lead">{listing.city}, CA</p>
+      <p class="price">{usd(listing.price)}</p>
+      <h2>{listing.headline}</h2>
+      <p>{listing.description}</p>
+
+      <dl class="facts">
+        {
+          details.map(([term, value]) => (
+            <div>
+              <dt>{term}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="note">
+        Listed by {licenseLine}. Information is believed accurate but is not guaranteed. Buyers should verify square
+        footage, lot size, zoning, permitted use and all other details.
+      </p>
+    </div>
+
+    <aside>
+      <h2 class="aside-h">Ask about this property</h2>
+      <LeadForm kind="listing" subject={place} submitLabel="Send inquiry" />
+    </aside>
+  </section>
+</Base>
+
+<style>
+  .top {
+    padding-top: 1.5rem;
+  }
+
+  .top a {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .detail {
+    padding-block: 1rem clamp(3rem, 8vw, 5rem);
+  }
+
+  .gallery {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .altered {
+    margin-top: 0.75rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+    margin-bottom: 0.2em;
+  }
+
+  .price {
+    font: 500 2rem/1.2 var(--serif);
+    color: var(--brass);
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+  }
+
+  .aside-h {
+    margin-top: 0;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1rem 1.5rem;
+    margin: 1.75rem 0;
+    padding: 1.25rem 0;
+    border-block: 1px solid var(--line);
+  }
+
+  dt {
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  aside {
+    position: sticky;
+    top: 6rem;
+  }
+</style>

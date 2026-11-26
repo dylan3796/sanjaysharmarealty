@@ -1,0 +1,89 @@
+---
+// Drop the portrait at src/assets/headshot.jpg (or .jpeg/.png/.webp) and it appears here.
+import { Image } from 'astro:assets';
+import { site, licenseLine } from '../config/site';
+
+interface Props {
+  caption?: boolean;
+}
+const { caption = true } = Astro.props;
+
+const found = import.meta.glob<{ default: ImageMetadata }>('../assets/headshot.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const photo = Object.values(found)[0]?.default;
+const initials = site.brokerName
+  .split(' ')
+  .map((w) => w[0])
+  .join('');
+---
+
+<figure class="headshot">
+  <div class="frame">
+    {
+      photo ? (
+        <Image
+          src={photo}
+          alt={`Portrait of ${site.brokerName}`}
+          widths={[360, 560, 840]}
+          sizes="(min-width: 56rem) 26rem, 80vw"
+          loading="eager"
+        />
+      ) : (
+        <div class="missing" data-placeholder>
+          <span aria-hidden="true">{initials}</span>
+          <small>Add src/assets/headshot.jpg</small>
+        </div>
+      )
+    }
+  </div>
+  {caption && <figcaption>{licenseLine}</figcaption>}
+</figure>
+
+<style>
+  .headshot {
+    margin: 0;
+    max-width: 26rem;
+    justify-self: center;
+    width: 100%;
+  }
+
+  .frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #b9bfc4;
+    box-shadow: 14px 14px 0 var(--brass-bright);
+  }
+
+  .frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+
+  .missing {
+    height: 100%;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.5rem;
+    color: var(--navy);
+  }
+
+  .missing span {
+    font: 500 5rem/1 var(--serif);
+  }
+
+  .missing small {
+    font-size: 0.875rem;
+  }
+
+  figcaption {
+    margin-top: 1.6rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+</style>

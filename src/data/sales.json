@@ -1,0 +1,6 @@
+[
+  { "sample": true, "year": 2025, "city": "Elk Grove", "type": "Single-family home", "side": "Seller", "price": 702000 },
+  { "sample": true, "year": 2025, "city": "Sacramento", "type": "Duplex", "side": "Buyer", "price": 790000 },
+  { "sample": true, "year": 2024, "city": "Carmel Valley", "type": "Land", "side": "Seller", "price": 395000 },
+  { "sample": true, "year": 2024, "city": "Sacramento", "type": "Single-family home", "side": "Buyer", "price": 560000 }
+]
