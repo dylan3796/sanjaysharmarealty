@@ -5,6 +5,14 @@ Website for Sanjay Sharma, independent California real estate broker (DRE #01269
 Static site built with [Astro](https://astro.build). No database and no server: it builds to plain
 HTML and can be hosted free on Cloudflare Pages, Netlify or Vercel.
 
+## What the site is
+
+Two destinations: **Listings** and **Contact**. The Home page introduces Sanjay, lists the
+services he offers (buying, selling, land and investment, free home valuation) and shows current
+listings. Each service opens the contact form with that topic already chosen, and the topic heads
+the message he receives. Nothing is done on the site itself: every path ends with the visitor
+leaving a name and a phone number or email, and Sanjay getting in touch.
+
 ## Run it
 
 ```bash
@@ -31,7 +39,8 @@ there. The real site will sit at the root of its own domain and needs neither se
 | Email, license number, areas, social links, booking link | `src/config/site.ts` |
 | Listings | `src/data/listings.json` |
 | Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
-| Testimonials (empty for now; the page joins the menu once one is added) | `src/data/testimonials.json` |
+| Testimonials (empty for now; the first one shows on the Home page once added) | `src/data/testimonials.json` |
+| Services listed on Home and in the contact form | `services` in `src/config/site.ts` |
 | Headshot | drop the file at `src/assets/headshot.jpg` |
 | Page wording | `src/pages/*.astro` |
 | Colors and type | `src/styles/global.css` |
@@ -54,7 +63,7 @@ Committing the change redeploys the site once hosting is connected to this repos
 
 ## Adding testimonials
 
-`src/data/testimonials.json` is empty, so the Testimonials link is hidden. To add one, put a block
+`src/data/testimonials.json` is empty, so no quote is shown. To add one, put a block
 like this between the square brackets (separate several with commas):
 
 ```json
@@ -65,7 +74,7 @@ like this between the square brackets (separate several with commas):
 }
 ```
 
-The Testimonials page then appears in the menu and the first quote shows on the Home page. Use only
+The first quote then shows on the Home page. Use only
 real clients' words, with their permission.
 
 ## Not wired up yet

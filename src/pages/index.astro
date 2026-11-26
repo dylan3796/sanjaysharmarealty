@@ -4,8 +4,7 @@ import Headshot from '../components/Headshot.astro';
 import ListingCard from '../components/ListingCard.astro';
 import TrackRecord from '../components/TrackRecord.astro';
 import ContactCta from '../components/ContactCta.astro';
-import LeadForm from '../components/LeadForm.astro';
-import { site } from '../config/site';
+import { site, services } from '../config/site';
 import { listings, sales, testimonials } from '../lib/content';
 
 const featured = listings.filter((l) => l.status !== 'sold').slice(0, 3);
@@ -25,8 +24,8 @@ const quote = testimonials[0];
           property. Based in {site.homeBase}, he serves clients throughout California.
         </p>
         <div class="btn-row">
-          <a class="btn" href="/valuation/">Get a free home valuation</a>
-          <a class="btn btn--ghost" href="/properties/">View properties</a>
+          <a class="btn btn--big" href="/contact/">Contact Sanjay</a>
+          <a class="btn btn--big btn--ghost" href="/properties/">See listings</a>
         </div>
       </div>
       <Headshot />
@@ -36,23 +35,17 @@ const quote = testimonials[0];
   <section class="section section--deep">
     <div class="wrap">
       <p class="eyebrow">How Sanjay can help</p>
-      <h2>One person looks after you from start to finish</h2>
-      <div class="grid grid--3 services">
-        <a class="card service" href="/buyers-sellers/#sellers">
-          <h3>Selling</h3>
-          <p>Find out what your home is worth, and let Sanjay handle the sale.</p>
-          <span class="more">For sellers</span>
-        </a>
-        <a class="card service" href="/buyers-sellers/#buyers">
-          <h3>Buying</h3>
-          <p>Find the right home and pay a fair price for it.</p>
-          <span class="more">For buyers</span>
-        </a>
-        <a class="card service" href="/land-investment/">
-          <h3>Land and investment</h3>
-          <p>Lots, acreage and rental property, with the extra checks they need.</p>
-          <span class="more">Land &amp; investment</span>
-        </a>
+      <h2>Tell him what you need. He takes it from there.</h2>
+      <div class="services">
+        {
+          services.map((service) => (
+            <a class="card service" href={`/contact/?topic=${service.id}`}>
+              <h3>{service.title}</h3>
+              <p>{service.text}</p>
+              <span class="more">Ask Sanjay</span>
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -63,11 +56,11 @@ const quote = testimonials[0];
         <div class="wrap">
           <div class="heading-row">
             <div>
-              <p class="eyebrow">Current listings</p>
+              <p class="eyebrow">Listings</p>
               <h2>Properties for sale</h2>
             </div>
             <a class="btn btn--ghost" href="/properties/">
-              See all properties
+              See all listings
             </a>
           </div>
           <div class="grid grid--3">
@@ -82,37 +75,15 @@ const quote = testimonials[0];
 
   {
     sales.length > 0 && (
-  <section class="section section--navy">
-    <div class="wrap split">
-      <div>
-        <p class="eyebrow">Track record</p>
-        <h2>{site.yearsExperience} years of California transactions</h2>
-        <p>
-          Markets change. The work of pricing a property correctly, presenting it well and negotiating carefully does
-          not.
-        </p>
-        <div class="btn-row">
-          <a class="btn btn--ghost" href="/about/#track-record">See past sales</a>
+      <section class="section section--navy">
+        <div class="wrap">
+          <p class="eyebrow">Track record</p>
+          <h2>{site.yearsExperience} years of California transactions</h2>
+          <TrackRecord />
         </div>
-      </div>
-      <TrackRecord />
-    </div>
-  </section>
+      </section>
     )
   }
-
-  <section class:list={['section', sales.length === 0 && 'section--deep']}>
-    <div class="wrap split">
-      <div>
-        <p class="eyebrow">Property valuation</p>
-        <h2>What is your property worth today?</h2>
-        <p class="lead">
-          Send the address and Sanjay will tell you what it could sell for. It is free, and you do not have to sell.
-        </p>
-      </div>
-      <LeadForm kind="valuation" request="Free property valuation (CMA)" submitLabel="Get my free valuation" />
-    </div>
-  </section>
 
   {
     quote && (
@@ -127,7 +98,6 @@ const quote = testimonials[0];
               <span>{quote.context}</span>
               {quote.sample && <span class="tag tag--sample">Sample</span>}
             </figcaption>
-            <a href="/testimonials/">More from clients</a>
           </figure>
         </div>
       </section>
@@ -162,10 +132,14 @@ const quote = testimonials[0];
 
   .services {
     margin-top: 2rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14.5rem), 1fr));
   }
 
   .service {
     display: grid;
+    grid-template-rows: auto 1fr auto;
     gap: 0.25rem;
     text-decoration: none;
     transition: border-color 0.15s, transform 0.15s;
@@ -224,7 +198,7 @@ const quote = testimonials[0];
     flex-wrap: wrap;
     gap: 0.25rem 0.75rem;
     align-items: center;
-    margin: 1rem 0;
+    margin: 1rem 0 0;
     font-size: 0.95rem;
     color: var(--ink-soft);
   }
@@ -233,8 +207,4 @@ const quote = testimonials[0];
     color: var(--ink);
   }
 
-  .quote a {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
 </style>

@@ -1,15 +1,9 @@
 ---
-import { site, nav } from '../config/site';
-import { testimonials } from '../lib/content';
+import { site } from '../config/site';
 
 // Drop the preview sub-folder, if any, so the current page is still recognised.
 const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
-const isCurrent = (href: string) => path === href || path.startsWith(href);
-// Contact is the button at the end of the bar, so it is not repeated in the list.
-// Testimonials joins the menu once there is at least one to show.
-const links = nav.filter(
-  (item) => item.href !== '/contact/' && (item.href !== '/testimonials/' || testimonials.length > 0),
-);
+const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
 ---
 
 <header class="site-header">
@@ -19,38 +13,14 @@ const links = nav.filter(
       <span class="brand-sub">{site.brokerTitle} · DRE #{site.dreNumber}</span>
     </a>
 
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">
-      <span class="visually-hidden">Menu</span>
-      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-      </svg>
-    </button>
-
-    <nav id="site-nav" class="nav" aria-label="Main">
-      <ul>
-        {
-          links.map((item) => (
-            <li>
-              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <a class="call" href="/contact/" aria-current={isCurrent('/contact/') ? 'page' : undefined}>Contact Sanjay</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="/properties/" aria-current={on('/properties/')}>Listings</a>
+      <a class="call" href="/contact/" aria-current={on('/contact/')}
+        >Contact<span class="wide">&nbsp;Sanjay</span></a
+      >
     </nav>
   </div>
 </header>
-
-<script>
-  const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
-  const navEl = document.getElementById('site-nav');
-  btn?.addEventListener('click', () => {
-    const open = navEl?.classList.toggle('is-open') ?? false;
-    btn.setAttribute('aria-expanded', String(open));
-  });
-</script>
 
 <style>
   .site-header {
@@ -66,12 +36,15 @@ const links = nav.filter(
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    flex-wrap: wrap;
     padding-block: 0.8rem;
   }
 
+  /* The name and license line take the space left over and wrap if they must, so the
+     two buttons always stay on the same line. */
   .brand {
     display: grid;
+    flex: 1 1 auto;
+    min-width: 0;
     text-decoration: none;
     line-height: 1.2;
   }
@@ -88,63 +61,37 @@ const links = nav.filter(
     letter-spacing: 0.02em;
   }
 
-  .menu-btn {
-    display: inline-grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    background: none;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    color: var(--ink);
-    cursor: pointer;
-  }
-
   .nav {
-    display: none;
-    flex-basis: 100%;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .nav.is-open {
     display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex: none;
   }
 
-  .nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-  }
-
-  .nav ul a {
-    display: block;
-    padding: 0.7rem 0;
+  .link {
+    padding: 0.4rem 0;
+    font-weight: 600;
+    font-size: 0.975rem;
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 2px solid transparent;
   }
 
-  .nav ul a[aria-current='page'] {
-    color: var(--brass);
+  .link:hover,
+  .link[aria-current='page'] {
+    border-bottom-color: var(--brass-bright);
   }
 
   .call {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     min-height: 2.75rem;
-    margin-top: 0.5rem;
-    padding: 0.55rem 1.1rem;
+    padding: 0.55rem 0.9rem;
     border: 1.5px solid var(--navy);
     border-radius: var(--radius);
     background: var(--navy);
     color: var(--on-navy);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.975rem;
     text-decoration: none;
     white-space: nowrap;
   }
@@ -154,43 +101,26 @@ const links = nav.filter(
     border-color: var(--navy-soft);
   }
 
-  @media (min-width: 72rem) {
-    .menu-btn {
-      display: none;
-    }
+  .wide {
+    display: none;
+  }
 
+  /* Small phones: a slightly smaller name keeps everything on one line. */
+  @media (max-width: 25rem) {
+    .brand-name {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .wide {
+      display: inline;
+    }
     .nav {
-      display: flex;
-      flex-basis: auto;
-      flex-direction: row;
-      align-items: center;
-      gap: 1.15rem;
-      padding: 0;
+      gap: 1.5rem;
     }
-
-    .nav ul {
-      display: flex;
-      gap: 1.15rem;
-    }
-
-    .nav ul a {
-      font-size: 0.925rem;
-      white-space: nowrap;
-    }
-
-    .nav ul a {
-      padding: 0.4rem 0;
-      border-bottom: 2px solid transparent;
-    }
-
-    .nav ul a:hover,
-    .nav ul a[aria-current='page'] {
-      color: var(--ink);
-      border-bottom-color: var(--brass-bright);
-    }
-
     .call {
-      margin-top: 0;
+      padding-inline: 1.1rem;
     }
   }
 </style>

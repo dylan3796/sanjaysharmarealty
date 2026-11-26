@@ -60,12 +60,17 @@ export const site = {
 
 export const licenseLine = `${site.brokerName}, ${site.brokerTitle} · DRE #${site.dreNumber}`;
 
+// The site has two destinations: his listings, and a way to reach him.
 export const nav = [
-  { href: '/about/', label: 'About' },
-  { href: '/properties/', label: 'Properties' },
-  { href: '/buyers-sellers/', label: 'Buyers & Sellers' },
-  { href: '/land-investment/', label: 'Land & Investment' },
-  { href: '/valuation/', label: 'Valuation' },
-  { href: '/testimonials/', label: 'Testimonials' },
+  { href: '/properties/', label: 'Listings' },
   { href: '/contact/', label: 'Contact' },
 ];
+
+// What Sanjay offers. Each one opens the contact form with that topic already chosen,
+// and the topic heads the message he receives.
+export const services = [
+  { id: 'buying', title: 'Buying a home', text: 'Find the right home and pay a fair price.', asksProperty: false },
+  { id: 'selling', title: 'Selling a home', text: 'Learn what it is worth, then let Sanjay sell it.', asksProperty: true },
+  { id: 'land', title: 'Land and investment', text: 'Lots, acreage and rental property.', asksProperty: false },
+  { id: 'valuation', title: 'Free home valuation', text: 'What your property could sell for today.', asksProperty: true },
+] as const;

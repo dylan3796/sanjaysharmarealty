@@ -9,11 +9,11 @@ import { listings, categoryLabel, type ListingCategory } from '../../lib/content
 const categories = [...new Set(listings.map((l) => l.category))] as ListingCategory[];
 ---
 
-<Base title="Properties for sale" description={`Homes, land and investment property listed by ${site.brokerName}.`}>
+<Base title="Listings" description={`Homes, land and investment property listed by ${site.brokerName}.`}>
   <div class="page-head">
     <div class="wrap">
-      <p class="eyebrow">Properties for sale</p>
-      <h1>Sanjay's current listings</h1>
+      <p class="eyebrow">Listings</p>
+      <h1>Properties for sale</h1>
       <p class="lead">Homes, land and investment property represented by {site.brokerName}.</p>
     </div>
   </div>

@@ -5,10 +5,11 @@
 // knows the reason before he picks up the phone.
 // Submissions POST as JSON to site.formEndpoint; while that is empty the form
 // opens the visitor's email app with the message filled in.
-import { site, licenseLine } from '../config/site';
+import { site, licenseLine, services } from '../config/site';
 
 interface Props {
-  kind: 'contact' | 'buyer-seller' | 'valuation' | 'listing';
+  /** `contact` asks what it is about (one of the services); `listing` is about one property. */
+  kind: 'contact' | 'listing';
   /** What the visitor is asking for, in plain words. Heads the message Sanjay receives. */
   request: string;
   /** Extra context for the broker, e.g. the listing address. */
@@ -18,7 +19,6 @@ interface Props {
 
 const { kind, request, subject = '', submitLabel = 'Send to Sanjay' } = Astro.props;
 const uid = `f-${kind}`;
-const topics = ['Buying a home', 'Selling a home', 'Land or investment property', 'A free home valuation', 'Something else'];
 ---
 
 <form
@@ -60,40 +60,26 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
     kind === 'contact' && (
       <div class="field">
         <label for={`${uid}-topic`}>
-          What is it about? <span class="opt">(optional)</span>
+          What can Sanjay help with? <span class="opt">(optional)</span>
         </label>
-        <select id={`${uid}-topic`} name="topic">
+        <select id={`${uid}-topic`} name="topic" data-topic>
           <option value="">Please choose</option>
-          {topics.map((t) => (
-            <option>{t}</option>
+          {services.map((s) => (
+            <option value={s.title} data-id={s.id} data-asks-property={s.asksProperty ? '' : undefined}>
+              {s.title}
+            </option>
           ))}
+          <option value="Something else" data-id="other">
+            Something else
+          </option>
         </select>
       </div>
     )
   }
 
   {
-    kind === 'buyer-seller' && (
-      <fieldset class="field choice">
-        <legend>
-          I am looking to <span class="opt">(optional)</span>
-        </legend>
-        <label>
-          <input type="radio" name="interest" value="Buy" /> Buy
-        </label>
-        <label>
-          <input type="radio" name="interest" value="Sell" /> Sell
-        </label>
-        <label>
-          <input type="radio" name="interest" value="Buy and sell" /> Both
-        </label>
-      </fieldset>
-    )
-  }
-
-  {
-    kind === 'valuation' && (
-      <div class="field">
+    kind === 'contact' && (
+      <div class="field" data-property-field hidden>
         <label for={`${uid}-address`}>
           Which property? <span class="opt">(optional)</span>
         </label>
@@ -113,8 +99,7 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
 
   <div class="field">
     <label for={`${uid}-msg`}>
-      {kind === 'valuation' ? 'Anything Sanjay should know' : 'Message'}
-      <span class="opt"> (optional)</span>
+      Message <span class="opt">(optional)</span>
     </label>
     <textarea id={`${uid}-msg`} name="message" rows="3"></textarea>
   </div>
@@ -133,6 +118,22 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
 
 <script>
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    const topic = form.querySelector<HTMLSelectElement>('[data-topic]');
+    const propertyField = form.querySelector<HTMLElement>('[data-property-field]');
+    const syncProperty = () => {
+      if (!topic || !propertyField) return;
+      const asks = topic.selectedOptions[0]?.hasAttribute('data-asks-property') ?? false;
+      propertyField.hidden = !asks;
+      if (!asks) propertyField.querySelector('input')!.value = '';
+    };
+    if (topic) {
+      const wanted = new URLSearchParams(window.location.search).get('topic');
+      const match = [...topic.options].find((o) => o.dataset.id === wanted);
+      if (match) topic.value = match.value;
+      topic.addEventListener('change', syncProperty);
+      syncProperty();
+    }
+
     form.querySelector<HTMLInputElement>('[data-reach]')?.addEventListener('input', (event) => {
       (event.target as HTMLInputElement).setCustomValidity('');
     });
@@ -159,11 +160,10 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
       if (data.company) return; // honeypot: bots fill it, people never see it
 
       // What Sanjay sees, in the order he needs it: the request first, then who and how to reach them.
-      const request = data.topic ? `${data.request}: ${data.topic}` : data.request;
+      const request = data.topic || data.request;
       const fields: [string, string | undefined][] = [
         ['Request', request],
-        ['Wants to', data.interest],
-        ['Property', data.propertyAddress ?? data.regarding],
+        ['Property', data.propertyAddress || data.regarding],
         ['Name', data.name],
         ['Phone or email', data.reach],
         ['Message', data.message],
@@ -194,6 +194,7 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
         });
         if (!response.ok) throw new Error(String(response.status));
         form.reset();
+        syncProperty();
         status.textContent = 'Thank you. Sanjay has your message and will be in touch.';
         status.classList.add('is-ok');
       } catch {
@@ -227,10 +228,16 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
     display: grid;
     gap: 1.1rem;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    align-items: start;
+  }
+
+  .field[hidden] {
+    display: none;
   }
 
   .field {
     display: grid;
+    align-content: start;
     gap: 0.35rem;
     border: 0;
     margin: 0;
@@ -238,8 +245,7 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
     min-width: 0;
   }
 
-  label,
-  legend {
+  label {
     font-size: 0.95rem;
     font-weight: 600;
     padding: 0;
@@ -278,32 +284,6 @@ const topics = ['Buying a home', 'Selling a home', 'Land or investment property'
 
   textarea {
     resize: vertical;
-  }
-
-  .choice {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
-  }
-
-  .choice legend {
-    width: 100%;
-    margin-bottom: 0.35rem;
-  }
-
-  .choice label {
-    display: flex;
-    gap: 0.55rem;
-    align-items: flex-start;
-    font-weight: 400;
-  }
-
-  input[type='radio'] {
-    width: 1.15rem;
-    height: 1.15rem;
-    margin: 0.2rem 0 0;
-    accent-color: var(--navy);
-    flex: none;
   }
 
   .btn {

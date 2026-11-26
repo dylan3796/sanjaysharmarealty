@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import LeadForm from '../components/LeadForm.astro';
-import { site, licenseLine } from '../config/site';
+import { site, licenseLine, services } from '../config/site';
 ---
 
 <Base title="Contact" description={`Contact ${site.brokerName}, independent California real estate broker.`}>
@@ -17,6 +17,14 @@ import { site, licenseLine } from '../config/site';
     <div class="wrap split">
       <div>
         <dl class="ways">
+          <div>
+            <dt>Sanjay can help with</dt>
+            <dd>
+              <ul class="ticks">
+                {services.map((s) => <li>{s.title}</li>)}
+              </ul>
+            </dd>
+          </div>
           <div>
             <dt>What happens next</dt>
             <dd>Sanjay reads every message himself and gets back to you. Your details are not shared with anyone.</dd>
@@ -71,6 +79,11 @@ import { site, licenseLine } from '../config/site';
     margin: 0.2rem 0 0;
     font: 500 clamp(1.3rem, 3vw, 1.7rem) / 1.3 var(--serif);
     overflow-wrap: anywhere;
+  }
+
+  dd .ticks {
+    margin: 0.5rem 0 0;
+    font: 400 1.1rem/1.5 var(--sans);
   }
 
   dd a {
