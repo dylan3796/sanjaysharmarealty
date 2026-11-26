@@ -1,10 +1,14 @@
 ---
 import { site, nav } from '../config/site';
+import { testimonials } from '../lib/content';
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(href);
 // Contact is the button at the end of the bar, so it is not repeated in the list.
-const links = nav.filter((item) => item.href !== '/contact/');
+// Testimonials joins the menu once there is at least one to show.
+const links = nav.filter(
+  (item) => item.href !== '/contact/' && (item.href !== '/testimonials/' || testimonials.length > 0),
+);
 ---
 
 <header class="site-header">

@@ -10,7 +10,11 @@ const reviewLinks = [
 ].filter(([, url]) => url);
 ---
 
-<Base title="Testimonials" description={`What clients say about working with ${site.brokerName}.`}>
+<Base
+  title="Testimonials"
+  description={`What clients say about working with ${site.brokerName}.`}
+  noindex={testimonials.length === 0}
+>
   <div class="page-head">
     <div class="wrap">
       <p class="eyebrow">Testimonials</p>

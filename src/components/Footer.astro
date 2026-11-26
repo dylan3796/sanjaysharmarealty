@@ -1,7 +1,9 @@
 ---
 import { site, nav, licenseLine } from '../config/site';
+import { testimonials } from '../lib/content';
 
 const year = new Date().getFullYear();
+const links = nav.filter((item) => item.href !== '/testimonials/' || testimonials.length > 0);
 const socials = Object.entries(site.social).filter(([, url]) => url);
 const socialLabel: Record<string, string> = {
   zillow: 'Zillow',
@@ -38,7 +40,7 @@ const socialLabel: Record<string, string> = {
     <nav aria-label="Footer">
       <ul class="links">
         {
-          nav.map((item) => (
+          links.map((item) => (
             <li>
               <a href={item.href}>{item.label}</a>
             </li>

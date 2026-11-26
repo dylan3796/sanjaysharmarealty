@@ -4,6 +4,7 @@ import Headshot from '../components/Headshot.astro';
 import ListingCard from '../components/ListingCard.astro';
 import TrackRecord from '../components/TrackRecord.astro';
 import ContactCta from '../components/ContactCta.astro';
+import LeadForm from '../components/LeadForm.astro';
 import { site } from '../config/site';
 import { listings, sales, testimonials } from '../lib/content';
 
@@ -109,12 +110,15 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
         <p class="lead">
           Send the address and Sanjay will tell you what it could sell for. It is free, and you do not have to sell.
         </p>
-        <div class="btn-row">
-          <a class="btn" href="/valuation/">Get a free valuation</a>
-        </div>
       </div>
-      {
-        quote && (
+      <LeadForm kind="valuation" request="Free property valuation (CMA)" submitLabel="Get my free valuation" />
+    </div>
+  </section>
+
+  {
+    quote && (
+      <section class="section">
+        <div class="wrap">
           <figure class="quote">
             <blockquote>
               <p>{quote.quote}</p>
@@ -126,10 +130,10 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
             </figcaption>
             <a href="/testimonials/">More from clients</a>
           </figure>
-        )
-      }
-    </div>
-  </section>
+        </div>
+      </section>
+    )
+  }
 
   <ContactCta />
 </Base>
@@ -202,7 +206,8 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
   }
 
   .quote {
-    margin: 0;
+    margin: 0 auto;
+    max-width: 46rem;
     padding: clamp(1.5rem, 4vw, 2.25rem);
     background: var(--card);
     border: 1px solid var(--line);

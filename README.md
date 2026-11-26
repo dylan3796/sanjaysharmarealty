@@ -24,7 +24,7 @@ Open http://localhost:4321. `npm run build` writes the finished site to `dist/`.
 | Email, license number, areas, social links, booking link | `src/config/site.ts` |
 | Listings | `src/data/listings.json` |
 | Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
-| Testimonials | `src/data/testimonials.json` |
+| Testimonials (empty for now; the page joins the menu once one is added) | `src/data/testimonials.json` |
 | Headshot | drop the file at `src/assets/headshot.jpg` |
 | Page wording | `src/pages/*.astro` |
 | Colors and type | `src/styles/global.css` |
@@ -44,6 +44,22 @@ Each listing is one block in `src/data/listings.json`.
 `investment`. Leave fields that do not apply as `null`.
 
 Committing the change redeploys the site once hosting is connected to this repository.
+
+## Adding testimonials
+
+`src/data/testimonials.json` is empty, so the Testimonials link is hidden. To add one, put a block
+like this between the square brackets (separate several with commas):
+
+```json
+{
+  "quote": "What the client said, in their words.",
+  "name": "First name and last initial, or however they agreed to be named",
+  "context": "Sold a home in Elk Grove, 2025"
+}
+```
+
+The Testimonials page then appears in the menu and the first quote shows on the Home page. Use only
+real clients' words, with their permission.
 
 ## Not wired up yet
 
