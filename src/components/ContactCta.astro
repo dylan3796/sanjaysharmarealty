@@ -6,8 +6,8 @@ interface Props {
   text?: string;
 }
 const {
-  heading = 'Talk with Sanjay directly',
-  text = 'No call center and no hand-offs. Your call or message goes to the broker who will handle your sale or purchase.',
+  heading = 'Tell Sanjay what you need',
+  text = 'Leave your name and number and he will call you back himself. No call center and no hand-offs.',
 } = Astro.props;
 ---
 
@@ -17,8 +17,7 @@ const {
     <h2>{heading}</h2>
     <p>{text}</p>
     <div class="btn-row">
-      <a class="btn" href={site.phone.href}>Call {site.phone.display}</a>
-      <a class="btn btn--ghost" href="/contact/">Send a message</a>
+      <a class="btn" href="/contact/">Contact Sanjay</a>
       {
         site.bookingUrl && (
           <a class="btn btn--ghost" href={site.bookingUrl} rel="noopener">

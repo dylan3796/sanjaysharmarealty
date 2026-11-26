@@ -4,12 +4,12 @@ import LeadForm from '../components/LeadForm.astro';
 import { site, licenseLine } from '../config/site';
 ---
 
-<Base title="Contact" description={`Call, email or message ${site.brokerName}, independent California real estate broker.`}>
+<Base title="Contact" description={`Contact ${site.brokerName}, independent California real estate broker.`}>
   <div class="page-head">
     <div class="wrap">
       <p class="eyebrow">Contact</p>
-      <h1>Get in touch with Sanjay</h1>
-      <p class="lead">Calls and messages go straight to him.</p>
+      <h1>Contact Sanjay</h1>
+      <p class="lead">Leave your name and number, and he will call you back himself.</p>
     </div>
   </div>
 
@@ -18,12 +18,8 @@ import { site, licenseLine } from '../config/site';
       <div>
         <dl class="ways">
           <div>
-            <dt>Phone</dt>
-            <dd><a href={site.phone.href}>{site.phone.display}</a></dd>
-          </div>
-          <div>
-            <dt>Email</dt>
-            <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            <dt>What happens next</dt>
+            <dd>Sanjay reads every message himself and calls or emails you back.</dd>
           </div>
           <div>
             <dt>Areas served</dt>
@@ -50,6 +46,13 @@ import { site, licenseLine } from '../config/site';
 </Base>
 
 <style>
+  /* On a phone the form comes first, so nobody scrolls to find it. */
+  @media (max-width: 55.99rem) {
+    .split > :global(form) {
+      order: -1;
+    }
+  }
+
   .ways {
     margin: 0;
     display: grid;

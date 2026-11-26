@@ -21,7 +21,7 @@ Open http://localhost:4321. `npm run build` writes the finished site to `dist/`.
 
 | To change | Edit |
 | --- | --- |
-| Phone, email, license number, areas, social links, booking link | `src/config/site.ts` |
+| Email, license number, areas, social links, booking link | `src/config/site.ts` |
 | Listings | `src/data/listings.json` |
 | Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
 | Testimonials | `src/data/testimonials.json` |
@@ -47,9 +47,11 @@ Committing the change redeploys the site once hosting is connected to this repos
 
 ## Not wired up yet
 
-- **Forms.** `formEndpoint` in `src/config/site.ts` is empty, so forms open the visitor's email app
-  instead of sending. Set it to a form service URL (Formspree, Web3Forms, or a CRM webhook) to send
-  directly.
+- **Forms.** No phone number is published: visitors leave their details and Sanjay calls them back,
+  so the forms are the only way in. `formEndpoint` in `src/config/site.ts` is still empty, which
+  means forms open the visitor's email app instead of sending. Set it to a form service URL
+  (Formspree, Web3Forms, or a CRM webhook) so each inquiry lands in his inbox. For Web3Forms, also
+  set `formAccessKey`.
 - **Appointment booking.** Set `bookingUrl` and the "Book a call" buttons appear.
 - **IDX / MLS search.** Set `idx.searchUrl` once an IDX account exists and a "Search the MLS" panel
   appears on the Properties page.
@@ -65,8 +67,8 @@ npm run build
 npm run check:launch
 ```
 
-The check fails while any stand-in content remains: placeholder blocks, sample listings, the
-555 phone number, or unconfigured forms. Also confirm by hand:
+The check fails while any stand-in content remains: placeholder blocks, sample listings or
+unconfigured forms. Also confirm by hand:
 
 - [ ] `allowSampleContent` set to `false` in `src/config/site.ts`
 - [ ] Broker name matches the DRE license record exactly

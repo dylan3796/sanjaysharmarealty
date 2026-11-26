@@ -1,5 +1,5 @@
 ---
-// One form for every inquiry type. Fields change with `kind`.
+// One short form for every inquiry. Visitors leave a name and number; Sanjay calls back.
 // Submissions POST as JSON to site.formEndpoint; while that is empty the form
 // opens the visitor's email app with the message filled in.
 import { site, licenseLine } from '../config/site';
@@ -11,9 +11,8 @@ interface Props {
   submitLabel?: string;
 }
 
-const { kind, subject = '', submitLabel = 'Send message' } = Astro.props;
+const { kind, subject = '', submitLabel = 'Send to Sanjay' } = Astro.props;
 const uid = `f-${kind}`;
-const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '6 to 12 months', 'Just exploring'];
 ---
 
 <form
@@ -21,6 +20,7 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
   data-lead-form
   data-kind={kind}
   data-endpoint={site.formEndpoint}
+  data-access-key={site.formAccessKey}
   data-email={site.email}
   novalidate
 >
@@ -30,121 +30,62 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
     <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
   </p>
 
-  <div class="row">
-    <div class="field">
-      <label for={`${uid}-name`}>Full name</label>
-      <input id={`${uid}-name`} name="name" type="text" autocomplete="name" required />
-    </div>
-    <div class="field">
-      <label for={`${uid}-phone`}>Phone <span class="opt">(optional)</span></label>
-      <input id={`${uid}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" />
-    </div>
+  <div class="field">
+    <label for={`${uid}-name`}>Your name</label>
+    <input id={`${uid}-name`} name="name" type="text" autocomplete="name" required />
   </div>
 
-  <div class="field">
-    <label for={`${uid}-email`}>Email</label>
-    <input id={`${uid}-email`} name="email" type="email" autocomplete="email" required />
+  <div class="row">
+    <div class="field">
+      <label for={`${uid}-phone`}>Phone number</label>
+      <input id={`${uid}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+    </div>
+    <div class="field">
+      <label for={`${uid}-email`}>Email <span class="opt">(optional)</span></label>
+      <input id={`${uid}-email`} name="email" type="email" autocomplete="email" />
+    </div>
   </div>
 
   {
     kind === 'buyer-seller' && (
-      <>
-        <fieldset class="field choice">
-          <legend>I am looking to</legend>
-          <label>
-            <input type="radio" name="interest" value="Buy" checked /> Buy
-          </label>
-          <label>
-            <input type="radio" name="interest" value="Sell" /> Sell
-          </label>
-          <label>
-            <input type="radio" name="interest" value="Buy and sell" /> Both
-          </label>
-        </fieldset>
-        <div class="row">
-          <div class="field">
-            <label for={`${uid}-area`}>
-              Area or property address <span class="opt">(optional)</span>
-            </label>
-            <input id={`${uid}-area`} name="area" type="text" />
-          </div>
-          <div class="field">
-            <label for={`${uid}-budget`}>
-              Price range <span class="opt">(optional)</span>
-            </label>
-            <input id={`${uid}-budget`} name="priceRange" type="text" />
-          </div>
-        </div>
-      </>
+      <fieldset class="field choice">
+        <legend>I am looking to</legend>
+        <label>
+          <input type="radio" name="interest" value="Buy" checked /> Buy
+        </label>
+        <label>
+          <input type="radio" name="interest" value="Sell" /> Sell
+        </label>
+        <label>
+          <input type="radio" name="interest" value="Buy and sell" /> Both
+        </label>
+      </fieldset>
     )
   }
 
   {
     kind === 'valuation' && (
-      <>
-        <div class="field">
-          <label for={`${uid}-address`}>Property address</label>
-          <input id={`${uid}-address`} name="propertyAddress" type="text" autocomplete="street-address" required />
-        </div>
-        <div class="row row--3">
-          <div class="field">
-            <label for={`${uid}-beds`}>
-              Bedrooms <span class="opt">(optional)</span>
-            </label>
-            <input id={`${uid}-beds`} name="beds" type="number" min="0" max="20" inputmode="numeric" />
-          </div>
-          <div class="field">
-            <label for={`${uid}-baths`}>
-              Bathrooms <span class="opt">(optional)</span>
-            </label>
-            <input id={`${uid}-baths`} name="baths" type="number" min="0" max="20" step="0.5" inputmode="decimal" />
-          </div>
-          <div class="field">
-            <label for={`${uid}-sqft`}>
-              Square feet <span class="opt">(optional)</span>
-            </label>
-            <input id={`${uid}-sqft`} name="sqft" type="number" min="0" inputmode="numeric" />
-          </div>
-        </div>
-      </>
-    )
-  }
-
-  {
-    (kind === 'buyer-seller' || kind === 'valuation') && (
       <div class="field">
-        <label for={`${uid}-when`}>Timeframe</label>
-        <select id={`${uid}-when`} name="timeframe">
-          {timeframes.map((t) => (
-            <option>{t}</option>
-          ))}
-        </select>
+        <label for={`${uid}-address`}>Property address</label>
+        <input id={`${uid}-address`} name="propertyAddress" type="text" autocomplete="street-address" required />
       </div>
     )
   }
 
   <div class="field">
     <label for={`${uid}-msg`}>
-      {kind === 'valuation' ? 'Anything else about the property' : 'Message'}
-      {kind !== 'contact' && <span class="opt"> (optional)</span>}
+      {kind === 'valuation' ? 'Anything Sanjay should know' : 'Message'}
+      <span class="opt"> (optional)</span>
     </label>
-    <textarea id={`${uid}-msg`} name="message" rows="4" required={kind === 'contact'}></textarea>
+    <textarea id={`${uid}-msg`} name="message" rows="3"></textarea>
   </div>
-
-  <label class="check">
-    <input type="checkbox" name="textOk" value="yes" />
-    <span>
-      It is fine to text me at the number above about my inquiry. Message and data rates may apply. Consent is not a
-      condition of any service.
-    </span>
-  </label>
 
   <button class="btn" type="submit">{submitLabel}</button>
 
   <p class="status" role="status" aria-live="polite"></p>
 
   <p class="note fine">
-    By sending this form you agree that {site.brokerName} may contact you by phone or email about your inquiry. See the{' '}
+    Sanjay will call or email you back using these details. See the{' '}
     <a href="/privacy/">privacy policy</a>. {licenseLine}.
   </p>
 </form>
@@ -188,14 +129,19 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ ...data, page: window.location.pathname }),
+          body: JSON.stringify({
+            ...(form.dataset.accessKey ? { access_key: form.dataset.accessKey } : {}),
+            ...data,
+            subject: `Website inquiry from ${data.name}`,
+            page: window.location.pathname,
+          }),
         });
         if (!response.ok) throw new Error(String(response.status));
         form.reset();
-        status.textContent = 'Thank you. Your message has been sent and Sanjay will be in touch shortly.';
+        status.textContent = 'Thank you. Sanjay has your details and will call you back.';
         status.classList.add('is-ok');
       } catch {
-        status.textContent = `Sorry, the message could not be sent. Please call or email ${form.dataset.email} instead.`;
+        status.textContent = `Sorry, that did not send. Please email ${form.dataset.email} instead.`;
         status.classList.add('is-error');
       } finally {
         button.disabled = false;
@@ -227,10 +173,6 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   }
 
-  .row--3 {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
-  }
-
   .field {
     display: grid;
     gap: 0.35rem;
@@ -255,8 +197,6 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
   input[type='text'],
   input[type='tel'],
   input[type='email'],
-  input[type='number'],
-  select,
   textarea {
     width: 100%;
     min-height: 3rem;
@@ -283,20 +223,13 @@ const timeframes = ['As soon as possible', 'Within 3 months', '3 to 6 months', '
     margin-bottom: 0.35rem;
   }
 
-  .choice label,
-  .check {
+  .choice label {
     display: flex;
     gap: 0.55rem;
     align-items: flex-start;
     font-weight: 400;
   }
 
-  .check {
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-  }
-
-  input[type='checkbox'],
   input[type='radio'] {
     width: 1.15rem;
     height: 1.15rem;

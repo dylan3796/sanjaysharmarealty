@@ -22,7 +22,6 @@ walk(dist);
 const checks = [
   { name: 'Placeholder blocks ("content needed")', test: (html) => html.includes('data-placeholder') },
   { name: 'Sample listings, sales or testimonials', test: (html) => html.includes('tag--sample') },
-  { name: 'Stand-in phone number (555-01xx)', test: (html) => /555-01\d\d/.test(html) },
   { name: 'Forms with no endpoint (falls back to email app)', test: (html) => /data-endpoint(="")?[\s>]/.test(html) },
 ];
 

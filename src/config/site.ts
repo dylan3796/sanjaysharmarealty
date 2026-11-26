@@ -16,8 +16,7 @@ export const site = {
   yearsExperience: 26,
   areas: ['Sacramento', 'Elk Grove', 'Carmel Valley'],
 
-  // TODO: real phone number. 555-01xx numbers are reserved and never ring.
-  phone: { display: '(916) 555-0100', href: 'tel:+19165550100' },
+  // No phone number is published: visitors leave their details and Sanjay calls them.
   // TODO: confirm the address he wants inquiries sent to.
   email: 'sanjay@sanjaysharmarealty.com',
 
@@ -37,6 +36,9 @@ export const site = {
   // Where lead forms are POSTed as JSON (Formspree, Web3Forms, a CRM webhook...).
   // While empty, forms open the visitor's email app with the message filled in.
   formEndpoint: '',
+  // Some form services (Web3Forms) identify the inbox with a public access key.
+  // If set, it is sent with each submission as `access_key`.
+  formAccessKey: '',
 
   // IDX (MLS search). Empty until an IDX account exists; then the site links to
   // the hosted search pages. See README.
