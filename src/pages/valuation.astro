@@ -5,55 +5,66 @@ import { site } from '../config/site';
 ---
 
 <Base
-  title="Property valuation"
-  description={`Request a free opinion of value for your property from ${site.brokerName}.`}
+  title="Free property valuation"
+  description={`Request a complimentary property valuation and comparative market analysis (CMA) from ${site.brokerName}.`}
 >
   <div class="page-head">
     <div class="wrap">
       <p class="eyebrow">Property valuation</p>
-      <h1>What is your property worth?</h1>
+      <h1>Find out what your property is worth</h1>
       <p class="lead">
-        A personal opinion of value from a broker with {site.yearsExperience} years in the market. Free, with no
-        obligation.
+        A complimentary valuation from a broker with {site.yearsExperience} years of experience. It is free, and you do
+        not have to sell.
       </p>
     </div>
   </div>
 
   <section class="section">
     <div class="wrap split">
+      <LeadForm kind="valuation" submitLabel="Get my free valuation" />
       <div>
         <h2>How it works</h2>
         <ol class="steps">
           <li>
             <div>
-              <h3>Send the address</h3>
-              <p>Your name, number and the property address are all it takes.</p>
+              <h3>Fill in the form</h3>
+              <p>Your name, phone number and the property address.</p>
             </div>
           </li>
           <li>
             <div>
               <h3>Sanjay calls you</h3>
-              <p>He asks a few questions about the property, then compares it with recent nearby sales.</p>
+              <p>He asks a few simple questions about the property.</p>
             </div>
           </li>
           <li>
             <div>
-              <h3>You get a price range</h3>
-              <p>With the reasoning behind it, and what would move the figure up or down.</p>
+              <h3>You get your report</h3>
+              <p>
+                It is called a comparative market analysis, or CMA. It compares your property with similar ones sold
+                nearby and gives you a likely selling price.
+              </p>
             </div>
           </li>
         </ol>
         <p class="note disclaimer">
-          A broker's opinion of value is not an appraisal. It is an estimate of likely selling price for marketing
-          purposes and may not be used for lending.
+          A broker's valuation or CMA is an estimate of likely selling price. It is not an appraisal and cannot be used
+          for a loan.
         </p>
       </div>
-      <LeadForm kind="valuation" submitLabel="Request valuation" />
     </div>
   </section>
 </Base>
 
 <style>
+  .steps h3 {
+    font-size: 1.25rem;
+  }
+
+  .steps p {
+    font-size: 1.05rem;
+  }
+
   .disclaimer {
     margin-top: 2rem;
     padding-top: 1rem;

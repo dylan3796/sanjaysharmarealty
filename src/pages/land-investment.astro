@@ -10,97 +10,90 @@ const matches = listings.filter((l) => l.category === 'land' || l.category === '
 
 <Base
   title="Land and investment properties"
-  description={`Land, lots and income property represented by ${site.brokerName} in ${site.areas.join(', ')}.`}
+  description={`${site.brokerName} helps clients buy and sell land, lots and rental property in ${site.areas.join(', ')}.`}
 >
   <div class="page-head">
     <div class="wrap">
       <p class="eyebrow">Land and investment properties</p>
-      <h1>Land, lots and income property</h1>
+      <h1>Land and rental property</h1>
       <p class="lead">
-        These purchases turn on details a house sale never raises. Sanjay helps you find them before you commit.
+        Buying land or a rental is not the same as buying a home. Sanjay knows what to check before you spend your
+        money.
       </p>
+      <div class="btn-row">
+        <a class="btn btn--big" href="#consultation">Request a free consultation</a>
+      </div>
     </div>
   </div>
 
   <section class="section">
     <div class="wrap grid grid--2">
-      <div class="card">
-        <h2>Buying land</h2>
-        <p>Before an offer, Sanjay helps you line up the questions that decide what a parcel is really worth:</p>
-        <ul>
-          <li>Zoning and what may be built</li>
-          <li>Legal access and easements</li>
-          <li>Water, sewer or septic, and power</li>
-          <li>Surveys, boundaries and title</li>
+      <div class="card card--service">
+        <p class="eyebrow">Land</p>
+        <h2>Lots and acreage</h2>
+        <ul class="ticks">
+          <li>He helps you find the right piece of land.</li>
+          <li>He helps you check what can be built, and whether it has road access, water and power.</li>
+          <li>He handles the offer and the paperwork.</li>
         </ul>
       </div>
-      <div class="card">
-        <h2>Buying income property</h2>
-        <p>For rentals and multi-unit buildings, the numbers are checked against documents, not estimates:</p>
-        <ul>
-          <li>Rent rolls and existing leases</li>
-          <li>Actual operating expenses</li>
-          <li>Local rental rules that apply</li>
-          <li>Condition and deferred maintenance</li>
+      <div class="card card--service">
+        <p class="eyebrow">Investment</p>
+        <h2>Rental and income property</h2>
+        <ul class="ticks">
+          <li>He helps you find property that brings in rent.</li>
+          <li>He helps you check the real rents and costs before you buy.</li>
+          <li>He handles the offer and the paperwork.</li>
         </ul>
       </div>
     </div>
     <div class="wrap">
-      <p class="note caution">
-        Nothing on this site is a promise of investment return, tax advice or legal advice. Zoning, permitted use,
-        income and expenses are for the buyer to verify with the relevant agency and their own advisors.
+      <p class="selling">
+        Selling land or a rental property? Sanjay does that too.
+        <a href="/valuation/">Find out what it is worth</a>.
       </p>
     </div>
   </section>
 
-  <section class="section section--deep">
-    <div class="wrap">
-      <p class="eyebrow">Available now</p>
-      <h2>Land and investment listings</h2>
-      {
-        matches.length > 0 ? (
+  {
+    matches.length > 0 && (
+      <section class="section section--deep">
+        <div class="wrap">
+          <p class="eyebrow">Available now</p>
+          <h2>Land and investment listings</h2>
           <div class="grid grid--3">
             {matches.map((listing) => (
               <ListingCard listing={listing} />
             ))}
           </div>
-        ) : (
-          <p>No land or investment listings are posted right now. Ask Sanjay what is coming up.</p>
-        )
-      }
-    </div>
-  </section>
+        </div>
+      </section>
+    )
+  }
 
-  <section class="section">
+  <section class="section" id="consultation">
     <div class="wrap split">
       <div>
-        <p class="eyebrow">Inquire</p>
-        <h2>Looking for a parcel or an income property?</h2>
-        <p>Leave your details and a line about what you have in mind. Sanjay will call you to talk it through.</p>
+        <p class="eyebrow">Free consultation</p>
+        <h2>Tell Sanjay what you are looking for</h2>
+        <p class="lead">Leave your name and phone number and he will call you. It is free.</p>
+        <p class="note">
+          Nothing on this site is a promise of profit, or tax or legal advice. Buyers should confirm zoning, permitted
+          use, income and costs for themselves.
+        </p>
       </div>
-      <LeadForm kind="buyer-seller" submitLabel="Send inquiry" />
+      <LeadForm kind="buyer-seller" submitLabel="Request a free consultation" />
     </div>
   </section>
 </Base>
 
 <style>
-  .card h2 {
-    font-size: 1.5rem;
+  .selling {
+    margin: 1.75rem 0 0;
+    font-size: 1.1rem;
   }
 
-  .card ul {
-    margin: 0;
-    padding-left: 1.1rem;
-    display: grid;
-    gap: 0.35rem;
-  }
-
-  .card li::marker {
-    color: var(--brass);
-  }
-
-  .caution {
-    margin-top: 1.5rem;
-    max-width: 75ch;
+  .selling a {
+    font-weight: 600;
   }
 </style>
