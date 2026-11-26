@@ -1,18 +1,23 @@
 ---
 // One short form for every inquiry. Visitors leave a name and number; Sanjay calls back.
+// Every submission says in plain words what the visitor asked for (`request`), so he
+// knows the reason before he picks up the phone.
 // Submissions POST as JSON to site.formEndpoint; while that is empty the form
 // opens the visitor's email app with the message filled in.
 import { site, licenseLine } from '../config/site';
 
 interface Props {
   kind: 'contact' | 'buyer-seller' | 'valuation' | 'listing';
-  /** Shown to the broker, e.g. the listing address. */
+  /** What the visitor is asking for, in plain words. Heads the message Sanjay receives. */
+  request: string;
+  /** Extra context for the broker, e.g. the listing address. */
   subject?: string;
   submitLabel?: string;
 }
 
-const { kind, subject = '', submitLabel = 'Send to Sanjay' } = Astro.props;
+const { kind, request, subject = '', submitLabel = 'Send to Sanjay' } = Astro.props;
 const uid = `f-${kind}`;
+const topics = ['Buying a home', 'Selling a home', 'Land or investment property', 'A free home valuation', 'Something else'];
 ---
 
 <form
@@ -24,7 +29,7 @@ const uid = `f-${kind}`;
   data-email={site.email}
   novalidate
 >
-  <input type="hidden" name="form" value={kind} />
+  <input type="hidden" name="request" value={request} />
   {subject && <input type="hidden" name="regarding" value={subject} />}
   <p class="hp" aria-hidden="true">
     <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
@@ -45,6 +50,20 @@ const uid = `f-${kind}`;
       <input id={`${uid}-email`} name="email" type="email" autocomplete="email" />
     </div>
   </div>
+
+  {
+    kind === 'contact' && (
+      <div class="field">
+        <label for={`${uid}-topic`}>What can Sanjay help you with?</label>
+        <select id={`${uid}-topic`} name="topic">
+          <option value="">Please choose</option>
+          {topics.map((t) => (
+            <option>{t}</option>
+          ))}
+        </select>
+      </div>
+    )
+  }
 
   {
     kind === 'buyer-seller' && (
@@ -91,8 +110,6 @@ const uid = `f-${kind}`;
 </form>
 
 <script>
-  const label = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
-
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('.status')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
@@ -109,17 +126,26 @@ const uid = `f-${kind}`;
 
       const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
       if (data.company) return; // honeypot: bots fill it, people never see it
-      delete data.company;
 
+      // What Sanjay sees, in the order he needs it: the request first, then who and how to reach them.
+      const request = data.topic ? `${data.request}: ${data.topic}` : data.request;
+      const fields: [string, string | undefined][] = [
+        ['Request', request],
+        ['Wants to', data.interest],
+        ['Property', data.propertyAddress ?? data.regarding],
+        ['Name', data.name],
+        ['Phone', data.phone],
+        ['Email', data.email],
+        ['Message', data.message],
+      ];
+      const filled = fields.filter(([, value]) => value) as [string, string][];
+      const subject = `${request} - ${data.name}`;
       const endpoint = form.dataset.endpoint;
 
       if (!endpoint) {
         // No form service configured yet: hand the message to the visitor's email app.
-        const lines = Object.entries(data)
-          .filter(([key, value]) => value && key !== 'form')
-          .map(([key, value]) => `${label(key)}: ${value}`);
-        const subject = `Website inquiry (${data.form}) from ${data.name}`;
-        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+        const body = filled.map(([name, value]) => `${name}: ${value}`).join('\n');
+        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         status.textContent = 'Your email app should now open with the message ready to send.';
         return;
       }
@@ -131,9 +157,9 @@ const uid = `f-${kind}`;
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
             ...(form.dataset.accessKey ? { access_key: form.dataset.accessKey } : {}),
-            ...data,
-            subject: `Website inquiry from ${data.name}`,
-            page: window.location.pathname,
+            subject,
+            ...Object.fromEntries(filled),
+            Page: window.location.pathname,
           }),
         });
         if (!response.ok) throw new Error(String(response.status));
@@ -197,6 +223,7 @@ const uid = `f-${kind}`;
   input[type='text'],
   input[type='tel'],
   input[type='email'],
+  select,
   textarea {
     width: 100%;
     min-height: 3rem;
