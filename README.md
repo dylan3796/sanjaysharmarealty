@@ -23,7 +23,7 @@ Open http://localhost:4321. `npm run build` writes the finished site to `dist/`.
 | --- | --- |
 | Phone, email, license number, areas, social links, booking link | `src/config/site.ts` |
 | Listings | `src/data/listings.json` |
-| Past sales (drives the track-record figures) | `src/data/sales.json` |
+| Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
 | Testimonials | `src/data/testimonials.json` |
 | Headshot | drop the file at `src/assets/headshot.jpg` |
 | Page wording | `src/pages/*.astro` |

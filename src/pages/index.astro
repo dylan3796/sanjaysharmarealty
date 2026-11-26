@@ -5,7 +5,7 @@ import ListingCard from '../components/ListingCard.astro';
 import TrackRecord from '../components/TrackRecord.astro';
 import ContactCta from '../components/ContactCta.astro';
 import { site } from '../config/site';
-import { listings, testimonials } from '../lib/content';
+import { listings, sales, testimonials } from '../lib/content';
 
 const featured = listings.filter((l) => l.status !== 'sold').slice(0, 3);
 const quote = testimonials[0];
@@ -80,6 +80,8 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
     )
   }
 
+  {
+    sales.length > 0 && (
   <section class="section section--navy">
     <div class="wrap split">
       <div>
@@ -96,8 +98,10 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
       <TrackRecord />
     </div>
   </section>
+    )
+  }
 
-  <section class="section">
+  <section class:list={['section', sales.length === 0 && 'section--deep']}>
     <div class="wrap split">
       <div>
         <p class="eyebrow">Property valuation</p>
@@ -201,7 +205,8 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
   .quote {
     margin: 0;
     padding: clamp(1.5rem, 4vw, 2.25rem);
-    background: var(--paper-deep);
+    background: var(--card);
+    border: 1px solid var(--line);
     border-left: 3px solid var(--brass-bright);
     border-radius: 0 var(--radius) var(--radius) 0;
   }

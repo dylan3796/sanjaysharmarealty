@@ -46,7 +46,10 @@ import { sales, usd } from '../lib/content';
             to hear.
           </li>
           <li>
-            <strong>Results.</strong> His past sales are listed below, so you can judge the record for yourself.
+            <strong>Results.</strong>{' '}
+            {sales.length > 0
+              ? 'His past sales are listed below, so you can judge the record for yourself.'
+              : 'The measure is simple: the right price, sound terms, and a sale that closes.'}
           </li>
         </ul>
 
@@ -59,13 +62,17 @@ import { sales, usd } from '../lib/content';
     </div>
   </section>
 
-  <section class="section section--navy" id="track-record">
-    <div class="wrap">
-      <p class="eyebrow">Track record</p>
-      <h2>Past sales</h2>
-      <TrackRecord />
-    </div>
-  </section>
+  {
+    sales.length > 0 && (
+      <section class="section section--navy" id="track-record">
+        <div class="wrap">
+          <p class="eyebrow">Track record</p>
+          <h2>Past sales</h2>
+          <TrackRecord />
+        </div>
+      </section>
+    )
+  }
 
   {
     sales.length > 0 && (
