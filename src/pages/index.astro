@@ -10,7 +10,6 @@ import { listings, sales, testimonials } from '../lib/content';
 
 const featured = listings.filter((l) => l.status !== 'sold').slice(0, 3);
 const quote = testimonials[0];
-const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}`;
 ---
 
 <Base>
@@ -23,7 +22,7 @@ const areaList = `${site.areas.slice(0, -1).join(', ')} and ${site.areas.at(-1)}
         </h1>
         <p class="lead">
           {site.brokerName} has spent {site.yearsExperience} years helping people buy and sell homes, land and investment
-          property in {areaList}.
+          property. Based in {site.homeBase}, he serves clients throughout California.
         </p>
         <div class="btn-row">
           <a class="btn" href="/valuation/">Get a free home valuation</a>

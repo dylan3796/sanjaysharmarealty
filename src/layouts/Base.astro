@@ -15,10 +15,10 @@ const { title, description, noindex = false } = Astro.props;
 // The preview copy is never offered to search engines.
 const hidden = noindex || import.meta.env.PUBLIC_PREVIEW === 'true';
 const base = `${site.brokerName}, ${site.brokerTitle}`;
-const fullTitle = title ? `${title} | ${base}` : `${base} | ${site.areas.join(', ')}`;
+const fullTitle = title ? `${title} | ${base}` : `${base} | ${site.homeBase}, California`;
 const desc =
   description ??
-  `${site.brokerName} is an independent California real estate broker serving ${site.areas.join(', ')}. DRE #${site.dreNumber}.`;
+  `${site.brokerName} is an independent real estate broker based in ${site.homeBase}, serving clients throughout California. DRE #${site.dreNumber}.`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 

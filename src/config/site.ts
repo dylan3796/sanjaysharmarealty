@@ -14,7 +14,9 @@ export const site = {
 
   tagline: 'Experience. Integrity. Results.',
   yearsExperience: 26,
-  areas: ['Sacramento', 'Elk Grove', 'Carmel Valley'],
+  // Where he is based, and the area he serves. Shown on Home, Contact, the footer and in page descriptions.
+  homeBase: 'Sacramento',
+  serviceArea: 'Based in Sacramento, serving clients throughout California',
 
   // No phone number is published: visitors leave their details and Sanjay calls them.
   // TODO: confirm the address he wants inquiries sent to.
