@@ -17,6 +17,13 @@ npm run dev
 
 Open http://localhost:4321. `npm run build` writes the finished site to `dist/`.
 
+## Preview link
+
+Every push to `main` publishes a preview copy with GitHub Pages
+(`.github/workflows/preview.yml`). It is marked "noindex" so search engines skip it. The preview
+lives in a sub-folder (`/sanjaysharmarealty/`); the build sets `SITE_BASE` so links still work
+there. The real site will sit at the root of its own domain and needs neither setting.
+
 ## Where things live
 
 | To change | Edit |

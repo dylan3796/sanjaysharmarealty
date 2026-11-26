@@ -2,7 +2,8 @@
 import { site, nav } from '../config/site';
 import { testimonials } from '../lib/content';
 
-const path = Astro.url.pathname;
+// Drop the preview sub-folder, if any, so the current page is still recognised.
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
 const isCurrent = (href: string) => path === href || path.startsWith(href);
 // Contact is the button at the end of the bar, so it is not repeated in the list.
 // Testimonials joins the menu once there is at least one to show.

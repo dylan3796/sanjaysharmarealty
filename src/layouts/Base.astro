@@ -12,6 +12,8 @@ interface Props {
 }
 
 const { title, description, noindex = false } = Astro.props;
+// The preview copy is never offered to search engines.
+const hidden = noindex || import.meta.env.PUBLIC_PREVIEW === 'true';
 const base = `${site.brokerName}, ${site.brokerTitle}`;
 const fullTitle = title ? `${title} | ${base}` : `${base} | ${site.areas.join(', ')}`;
 const desc =
@@ -28,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <title>{fullTitle}</title>
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {hidden && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
