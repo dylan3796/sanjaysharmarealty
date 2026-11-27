@@ -1,19 +1,40 @@
 ---
-// Appears only once an IDX account exists and site.idx.searchUrl is set.
+// Sanjay's MetroList search: every home for sale on MetroList, kept current by MetroList.
+// Shown on Home and Listings while site.idx.searchUrl is set.
 import { site } from '../config/site';
+
+interface Props {
+  /** Sits at the top of a section instead of below other content. */
+  first?: boolean;
+}
+const { first = false } = Astro.props;
 ---
 
 {
   site.idx.searchUrl && (
-    <div class="card idx">
-      <div>
-        <h3>Search every home on the market</h3>
-        <p>
-          Browse all {site.idx.mlsName} listings, save searches and get email alerts when a matching property comes up.
-        </p>
+    <div class:list={['card', 'idx', { first }]}>
+      <div class="text">
+        <p class="eyebrow">Search all homes for sale</p>
+        <h3>Search every home on {site.idx.mlsName}</h3>
+        <ol class="how">
+          <li>Open the search.</li>
+          <li>Scroll down and enter a ZIP code.</li>
+          <li>Choose your price range and home type, then search.</li>
+        </ol>
+        <p class="from">Listings come straight from {site.idx.mlsName}. Compliments of {site.brokerName}.</p>
       </div>
-      <a class="btn" href={site.idx.searchUrl}>
-        Search the MLS
+      <a class="btn btn--big" href={site.idx.searchUrl} target="_blank" rel="noopener">
+        Search {site.idx.mlsName}
+        <span class="visually-hidden">(opens in a new tab)</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
       </a>
     </div>
   )
@@ -25,12 +46,44 @@ import { site } from '../config/site';
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem 2rem;
+    gap: 1.25rem 2.5rem;
     margin-top: 2.5rem;
+    border-top: 3px solid var(--brass-bright);
   }
 
-  .idx p {
+  .idx.first {
+    margin: 0 0 2.5rem;
+  }
+
+  .text {
+    flex: 1 1 22rem;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    margin-bottom: 0.6rem;
+  }
+
+  .how {
+    margin: 0 0 0.75rem;
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.2rem;
+    font-size: 1.05rem;
+  }
+
+  .how li::marker {
+    color: var(--brass);
+    font-weight: 600;
+  }
+
+  .from {
     margin: 0;
+    font-size: 0.95rem;
     color: var(--ink-soft);
   }
 </style>

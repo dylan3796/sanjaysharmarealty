@@ -14,12 +14,14 @@ const categories = [...new Set(listings.map((l) => l.category))] as ListingCateg
     <div class="wrap">
       <p class="eyebrow">Listings</p>
       <h1>Properties for sale</h1>
-      <p class="lead">Homes, land and investment property represented by {site.brokerName}.</p>
+      <p class="lead">Search every home for sale, or see the properties {site.brokerName} represents.</p>
     </div>
   </div>
 
   <section class="section">
     <div class="wrap">
+      <IdxSlot first />
+      {listings.length > 0 && <h2 class="own">{site.brokerName}'s listings</h2>}
       {
         listings.length === 0 ? (
           <div class="card">
@@ -51,7 +53,6 @@ const categories = [...new Set(listings.map((l) => l.category))] as ListingCateg
           </>
         )
       }
-      <IdxSlot />
     </div>
   </section>
 
@@ -76,6 +77,11 @@ const categories = [...new Set(listings.map((l) => l.category))] as ListingCateg
 </script>
 
 <style>
+  .own {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1.25rem;
+  }
+
   .filters {
     display: flex;
     flex-wrap: wrap;

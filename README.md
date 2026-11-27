@@ -85,8 +85,10 @@ real clients' words, with their permission.
   (Formspree, Web3Forms, or a CRM webhook) so each inquiry lands in his inbox. For Web3Forms, also
   set `formAccessKey`.
 - **Appointment booking.** Set `bookingUrl` and the "Book a call" buttons appear.
-- **IDX / MLS search.** Set `idx.searchUrl` once an IDX account exists and a "Search the MLS" panel
-  appears on the Properties page.
+- **His own listings from the MLS.** The site links to Sanjay's MetroList search
+  (`idx.searchUrl` in `src/config/site.ts`), which shows every home for sale and is always
+  current. His own listings on the site still come from `src/data/listings.json`. Showing them
+  automatically needs an IDX feed from MetroList through an IDX provider.
 - **Hosting and domain.** Nothing is deployed.
 
 ## Before launch

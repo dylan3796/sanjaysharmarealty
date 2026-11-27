@@ -4,6 +4,7 @@ import Headshot from '../components/Headshot.astro';
 import ListingCard from '../components/ListingCard.astro';
 import TrackRecord from '../components/TrackRecord.astro';
 import ContactCta from '../components/ContactCta.astro';
+import IdxSlot from '../components/IdxSlot.astro';
 import { site, services } from '../config/site';
 import { listings, sales, testimonials } from '../lib/content';
 
@@ -50,28 +51,31 @@ const quote = testimonials[0];
     </div>
   </section>
 
-  {
-    featured.length > 0 && (
-      <section class="section">
-        <div class="wrap">
-          <div class="heading-row">
-            <div>
-              <p class="eyebrow">Listings</p>
-              <h2>Properties for sale</h2>
+  <section class="section">
+    <div class="wrap">
+      <IdxSlot first />
+      {
+        featured.length > 0 && (
+          <>
+            <div class="heading-row">
+              <div>
+                <p class="eyebrow">Listings</p>
+                <h2>{site.brokerName}'s properties for sale</h2>
+              </div>
+              <a class="btn btn--ghost" href="/properties/">
+                See all listings
+              </a>
             </div>
-            <a class="btn btn--ghost" href="/properties/">
-              See all listings
-            </a>
-          </div>
-          <div class="grid grid--3">
-            {featured.map((listing) => (
-              <ListingCard listing={listing} />
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
+            <div class="grid grid--3">
+              {featured.map((listing) => (
+                <ListingCard listing={listing} />
+              ))}
+            </div>
+          </>
+        )
+      }
+    </div>
+  </section>
 
   {
     sales.length > 0 && (

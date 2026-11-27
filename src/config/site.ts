@@ -42,10 +42,10 @@ export const site = {
   // If set, it is sent with each submission as `access_key`.
   formAccessKey: '',
 
-  // IDX (MLS search). Empty until an IDX account exists; then the site links to
-  // the hosted search pages. See README.
+  // Sanjay's MetroList search page: every home for sale on MetroList, always current.
+  // Shown on Home and Listings as "Search all homes for sale". Empty hides it.
   idx: {
-    searchUrl: '',
+    searchUrl: 'http://sanjaysharma3.metrolistpro.com/',
     mlsName: 'MetroList',
   },
 
