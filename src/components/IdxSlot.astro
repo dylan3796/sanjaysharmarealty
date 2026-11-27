@@ -14,8 +14,8 @@ const { first = false } = Astro.props;
   site.idx.searchUrl && (
     <div class:list={['card', 'idx', { first }]}>
       <div class="text">
-        <p class="eyebrow">Search all homes for sale</p>
-        <h3>Search every home on {site.idx.mlsName}</h3>
+        <p class="eyebrow">Homes for sale</p>
+        <h3>Search every home on {site.idx.mlsName}, including {site.brokerName.split(' ')[0]}'s listings</h3>
         <ol class="how">
           <li>Open the search.</li>
           <li>Scroll down and enter a ZIP code.</li>

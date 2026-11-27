@@ -42,7 +42,7 @@ there. The real site will sit at the root of its own domain and needs neither se
 | To change | Edit |
 | --- | --- |
 | Email, license number, areas, social links, booking link | `src/config/site.ts` |
-| Listings | `src/data/listings.json` |
+| Listings (empty: his listings live in the MLS and show in the MetroList search; add one here only for a property that is not in the MLS) | `src/data/listings.json` |
 | Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
 | Testimonials (empty for now; the first one shows on the Home page once added) | `src/data/testimonials.json` |
 | The "What do you need?" buttons on the form | `services` in `src/config/site.ts` |
@@ -51,6 +51,11 @@ there. The real site will sit at the root of its own domain and needs neither se
 | Colors and type | `src/styles/global.css` |
 
 ## Updating listings
+
+Sanjay's listings live in the MLS, and the MetroList search on the page shows them, always
+current. Nothing on the site needs updating when he lists or sells. The file below is only for a
+property that is not in the MLS (an off-market or pocket listing); while it is empty, no listings
+section appears.
 
 Each listing is one block in `src/data/listings.json`.
 
