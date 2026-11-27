@@ -1,9 +1,5 @@
 ---
-import { site } from '../config/site';
-
-// Drop the preview sub-folder, if any, so the current page is still recognised.
-const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
-const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
+import { site, contactHref } from '../config/site';
 ---
 
 <header class="site-header">
@@ -14,10 +10,14 @@ const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
     </a>
 
     <nav class="nav" aria-label="Main">
-      <a class="link" href="/properties/" aria-current={on('/properties/')}>Listings</a>
-      <a class="call" href="/contact/" aria-current={on('/contact/')}
-        >Contact<span class="wide">&nbsp;Sanjay</span></a
-      >
+      {
+        site.idx.searchUrl && (
+          <a class="link" href={site.idx.searchUrl} target="_blank" rel="noopener">
+            Search homes<span class="visually-hidden"> on {site.idx.mlsName} (opens in a new tab)</span>
+          </a>
+        )
+      }
+      <a class="call" href={contactHref}>Contact</a>
     </nav>
   </div>
 </header>
@@ -74,10 +74,10 @@ const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
     font-size: 0.975rem;
     text-decoration: none;
     border-bottom: 2px solid transparent;
+    white-space: nowrap;
   }
 
-  .link:hover,
-  .link[aria-current='page'] {
+  .link:hover {
     border-bottom-color: var(--brass-bright);
   }
 
@@ -85,7 +85,7 @@ const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
-    padding: 0.55rem 0.9rem;
+    padding: 0.55rem 1rem;
     border: 1.5px solid var(--navy);
     border-radius: var(--radius);
     background: var(--navy);
@@ -101,26 +101,17 @@ const on = (href: string) => (path.startsWith(href) ? 'page' : undefined);
     border-color: var(--navy-soft);
   }
 
-  .wide {
-    display: none;
-  }
-
-  /* Small phones: a slightly smaller name keeps everything on one line. */
-  @media (max-width: 25rem) {
-    .brand-name {
-      font-size: 1.2rem;
+  /* On a phone the page itself starts with a "Search homes" button, so the header keeps
+     only Contact and the name stays on one line. */
+  @media (max-width: 29.99rem) {
+    .link {
+      display: none;
     }
   }
 
   @media (min-width: 40rem) {
-    .wide {
-      display: inline;
-    }
     .nav {
       gap: 1.5rem;
-    }
-    .call {
-      padding-inline: 1.1rem;
     }
   }
 </style>

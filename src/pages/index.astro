@@ -3,12 +3,11 @@ import Base from '../layouts/Base.astro';
 import Headshot from '../components/Headshot.astro';
 import ListingCard from '../components/ListingCard.astro';
 import TrackRecord from '../components/TrackRecord.astro';
-import ContactCta from '../components/ContactCta.astro';
 import IdxSlot from '../components/IdxSlot.astro';
-import { site, services } from '../config/site';
+import LeadForm from '../components/LeadForm.astro';
+import { site, licenseLine } from '../config/site';
 import { listings, sales, testimonials } from '../lib/content';
 
-const featured = listings.filter((l) => l.status !== 'sold').slice(0, 3);
 const quote = testimonials[0];
 ---
 
@@ -25,49 +24,51 @@ const quote = testimonials[0];
           property. Based in {site.homeBase}, he serves clients throughout California.
         </p>
         <div class="btn-row">
-          <a class="btn btn--big" href="/contact/">Contact Sanjay</a>
-          <a class="btn btn--big btn--ghost" href="/properties/">See listings</a>
+          <a class="btn btn--big" href="#contact">Contact Sanjay</a>
+          {
+            site.idx.searchUrl && (
+              <a class="btn btn--big btn--ghost" href={site.idx.searchUrl} target="_blank" rel="noopener">
+                Search homes<span class="visually-hidden"> on {site.idx.mlsName} (opens in a new tab)</span>
+              </a>
+            )
+          }
         </div>
       </div>
       <Headshot />
     </div>
   </section>
 
-  <section class="section section--deep">
-    <div class="wrap">
-      <p class="eyebrow">How Sanjay can help</p>
-      <h2>Tell him what you need. He takes it from there.</h2>
-      <div class="services">
-        {
-          services.map((service) => (
-            <a class="card service" href={`/contact/?topic=${service.id}`}>
-              <h3>{service.title}</h3>
-              <p>{service.text}</p>
-              <span class="more">Ask Sanjay</span>
-            </a>
-          ))
-        }
+  <section class="section section--deep" id="contact">
+    <div class="wrap contact-grid">
+      <div class="intro">
+        <p class="eyebrow">Contact Sanjay</p>
+        <h2>Tell Sanjay what you need</h2>
+        <p class="lead">Tap what you need, leave your name and a phone number or email, and press send.</p>
+      </div>
+      <div class="form">
+        <LeadForm kind="contact" request="General message" />
+      </div>
+      <div class="extra">
+        <ul class="ticks">
+          <li>Sanjay reads every message himself.</li>
+          <li>He gets in touch to talk it through.</li>
+          <li>A home valuation is free, and you do not have to sell.</li>
+        </ul>
+        <p class="note">{licenseLine}. {site.independentStatement}</p>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="listings">
     <div class="wrap">
       <IdxSlot first />
       {
-        featured.length > 0 && (
+        listings.length > 0 && (
           <>
-            <div class="heading-row">
-              <div>
-                <p class="eyebrow">Listings</p>
-                <h2>{site.brokerName}'s properties for sale</h2>
-              </div>
-              <a class="btn btn--ghost" href="/properties/">
-                See all listings
-              </a>
-            </div>
+            <p class="eyebrow">Listings</p>
+            <h2>{site.brokerName}'s properties for sale</h2>
             <div class="grid grid--3">
-              {featured.map((listing) => (
+              {listings.map((listing) => (
                 <ListingCard listing={listing} />
               ))}
             </div>
@@ -91,7 +92,7 @@ const quote = testimonials[0];
 
   {
     quote && (
-      <section class="section">
+      <section class="section section--deep">
         <div class="wrap">
           <figure class="quote">
             <blockquote>
@@ -107,8 +108,6 @@ const quote = testimonials[0];
       </section>
     )
   }
-
-  <ContactCta />
 </Base>
 
 <style>
@@ -134,53 +133,55 @@ const quote = testimonials[0];
     max-width: 34rem;
   }
 
-  .services {
-    margin-top: 2rem;
+  /* The sticky header covers the top of the page when a link jumps to a section. */
+  :global(#contact),
+  :global(#listings) {
+    scroll-margin-top: 5.5rem;
+  }
+
+  .contact-grid {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14.5rem), 1fr));
+    gap: 1.5rem;
   }
 
-  .service {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 0.25rem;
-    text-decoration: none;
-    transition: border-color 0.15s, transform 0.15s;
+  .contact-grid .intro .lead {
+    margin-bottom: 0;
   }
 
-  .service:hover {
-    border-color: var(--brass);
-    transform: translateY(-2px);
+  .contact-grid .note {
+    margin-top: 1.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
 
-  .service p {
-    color: var(--ink-soft);
+  /* Side by side on a wide screen: the words on the left, the form on the right. */
+  @media (min-width: 56rem) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'intro form'
+        'extra form';
+      grid-template-rows: auto 1fr;
+      gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    }
+    .contact-grid .intro {
+      grid-area: intro;
+    }
+    .contact-grid .form {
+      grid-area: form;
+    }
+    .contact-grid .extra {
+      grid-area: extra;
+    }
   }
 
-  .more {
-    margin-top: 0.75rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--brass);
-  }
 
-  .more::after {
-    content: ' \2192';
-  }
 
-  .heading-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
 
-  .heading-row h2 {
-    margin: 0;
-  }
+
+
+
+
 
   .quote {
     margin: 0 auto;

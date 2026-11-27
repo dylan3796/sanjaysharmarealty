@@ -7,11 +7,16 @@ HTML and can be hosted free on Cloudflare Pages, Netlify or Vercel.
 
 ## What the site is
 
-Two destinations: **Listings** and **Contact**. The Home page introduces Sanjay, lists the
-services he offers (buying, selling, land and investment, free home valuation) and shows current
-listings. Each service opens the contact form with that topic already chosen, and the topic heads
-the message he receives. Nothing is done on the site itself: every path ends with the visitor
-leaving a name and a phone number or email, and Sanjay getting in touch.
+One page. From the top: Sanjay's photo and introduction, a contact form, a link to his MetroList
+search, and his own listings (each listing also has its own page with a question form).
+
+The contact form starts with big buttons for what the visitor needs: Free home valuation,
+Selling, Buying, Land or investment, Something else. The button tapped heads the message Sanjay
+receives. Then only a name and a phone number or email are required. Nothing else happens on the
+site: every visitor leaves their details and Sanjay gets in touch.
+
+The buttons are set in `services` in `src/config/site.ts`. A link such as
+`/?topic=valuation#contact` opens the page at the form with that button already chosen.
 
 ## Run it
 
@@ -40,7 +45,7 @@ there. The real site will sit at the root of its own domain and needs neither se
 | Listings | `src/data/listings.json` |
 | Past sales (empty for now; the track-record sections appear once rows are added) | `src/data/sales.json` |
 | Testimonials (empty for now; the first one shows on the Home page once added) | `src/data/testimonials.json` |
-| Services listed on Home and in the contact form | `services` in `src/config/site.ts` |
+| The "What do you need?" buttons on the form | `services` in `src/config/site.ts` |
 | Headshot | drop the file at `src/assets/headshot.jpg` |
 | Page wording | `src/pages/*.astro` |
 | Colors and type | `src/styles/global.css` |

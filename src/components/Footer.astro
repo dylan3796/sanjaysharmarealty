@@ -1,8 +1,7 @@
 ---
-import { site, nav, licenseLine } from '../config/site';
+import { site, licenseLine } from '../config/site';
 
 const year = new Date().getFullYear();
-const links = nav;
 const socials = Object.entries(site.social).filter(([, url]) => url);
 const socialLabel: Record<string, string> = {
   zillow: 'Zillow',
@@ -33,17 +32,6 @@ const socialLabel: Record<string, string> = {
       }
     </div>
 
-    <nav aria-label="Footer">
-      <ul class="links">
-        {
-          links.map((item) => (
-            <li>
-              <a href={item.href}>{item.label}</a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
 
     <div class="eho">
       <svg width="54" height="54" viewBox="0 0 64 64" role="img" aria-label="Equal Housing Opportunity">

@@ -60,17 +60,15 @@ export const site = {
 
 export const licenseLine = `${site.brokerName}, ${site.brokerTitle} · DRE #${site.dreNumber}`;
 
-// The site has two destinations: his listings, and a way to reach him.
-export const nav = [
-  { href: '/properties/', label: 'Listings' },
-  { href: '/contact/', label: 'Contact' },
-];
+// The whole site is one page. Everything leads to the contact form on it (#contact).
+export const contactHref = '/#contact';
 
-// What Sanjay offers. Each one opens the contact form with that topic already chosen,
-// and the topic heads the message he receives.
+// What Sanjay offers. These are the big buttons at the top of the contact form; the one a
+// visitor taps heads the message he receives. `asksProperty` adds an optional "Which property?".
 export const services = [
-  { id: 'buying', title: 'Buying a home', text: 'Find the right home and pay a fair price.', asksProperty: false },
-  { id: 'selling', title: 'Selling a home', text: 'Learn what it is worth, then let Sanjay sell it.', asksProperty: true },
-  { id: 'land', title: 'Land and investment', text: 'Lots, acreage and rental property.', asksProperty: false },
-  { id: 'valuation', title: 'Free home valuation', text: 'What your property could sell for today.', asksProperty: true },
+  { id: 'valuation', title: 'Free home valuation', asksProperty: true },
+  { id: 'selling', title: 'Selling', asksProperty: true },
+  { id: 'buying', title: 'Buying', asksProperty: false },
+  { id: 'land', title: 'Land or investment', asksProperty: false },
+  { id: 'other', title: 'Something else', asksProperty: false },
 ] as const;

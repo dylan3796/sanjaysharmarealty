@@ -8,7 +8,7 @@
 import { site, licenseLine, services } from '../config/site';
 
 interface Props {
-  /** `contact` asks what it is about (one of the services); `listing` is about one property. */
+  /** `contact` asks what it is about (big buttons, one per service); `listing` is about one property. */
   kind: 'contact' | 'listing';
   /** What the visitor is asking for, in plain words. Heads the message Sanjay receives. */
   request: string;
@@ -36,6 +36,28 @@ const uid = `f-${kind}`;
     <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
   </p>
 
+  {
+    kind === 'contact' && (
+      <fieldset class="field needs">
+        <legend>What do you need?</legend>
+        <div class="choices">
+          {services.map((s) => (
+            <label class="choice">
+              <input
+                type="radio"
+                name="topic"
+                value={s.title}
+                data-id={s.id}
+                data-asks-property={s.asksProperty ? '' : undefined}
+              />
+              <span>{s.title}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
   <div class="row">
     <div class="field">
       <label for={`${uid}-name`}>Your name <span class="opt">(first name is fine)</span></label>
@@ -55,27 +77,6 @@ const uid = `f-${kind}`;
       <span class="hint" id={`${uid}-reach-hint`}>Whichever you prefer Sanjay to use.</span>
     </div>
   </div>
-
-  {
-    kind === 'contact' && (
-      <div class="field">
-        <label for={`${uid}-topic`}>
-          What can Sanjay help with? <span class="opt">(optional)</span>
-        </label>
-        <select id={`${uid}-topic`} name="topic" data-topic>
-          <option value="">Please choose</option>
-          {services.map((s) => (
-            <option value={s.title} data-id={s.id} data-asks-property={s.asksProperty ? '' : undefined}>
-              {s.title}
-            </option>
-          ))}
-          <option value="Something else" data-id="other">
-            Something else
-          </option>
-        </select>
-      </div>
-    )
-  }
 
   {
     kind === 'contact' && (
@@ -118,21 +119,20 @@ const uid = `f-${kind}`;
 
 <script>
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
-    const topic = form.querySelector<HTMLSelectElement>('[data-topic]');
+    const choices = [...form.querySelectorAll<HTMLInputElement>('input[name="topic"]')];
     const propertyField = form.querySelector<HTMLElement>('[data-property-field]');
     const syncProperty = () => {
-      if (!topic || !propertyField) return;
-      const asks = topic.selectedOptions[0]?.hasAttribute('data-asks-property') ?? false;
+      if (!propertyField) return;
+      const asks = choices.find((c) => c.checked)?.hasAttribute('data-asks-property') ?? false;
       propertyField.hidden = !asks;
       if (!asks) propertyField.querySelector('input')!.value = '';
     };
-    if (topic) {
-      const wanted = new URLSearchParams(window.location.search).get('topic');
-      const match = [...topic.options].find((o) => o.dataset.id === wanted);
-      if (match) topic.value = match.value;
-      topic.addEventListener('change', syncProperty);
-      syncProperty();
-    }
+    // A link such as /?topic=valuation#contact arrives with that button already chosen.
+    const wanted = new URLSearchParams(window.location.search).get('topic');
+    const match = choices.find((c) => c.dataset.id === wanted);
+    if (match) match.checked = true;
+    choices.forEach((c) => c.addEventListener('change', syncProperty));
+    syncProperty();
 
     form.querySelector<HTMLInputElement>('[data-reach]')?.addEventListener('input', (event) => {
       (event.target as HTMLInputElement).setCustomValidity('');
@@ -235,6 +235,62 @@ const uid = `f-${kind}`;
     display: none;
   }
 
+  /* "What do you need?": big buttons, easy to tap */
+  .needs legend {
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .choices {
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr));
+  }
+
+  .choice {
+    position: relative;
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .choice span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    border: 1.5px solid #b9b09c;
+    border-radius: var(--radius);
+    background: #fff;
+  }
+
+  .choice:hover span {
+    border-color: var(--navy);
+  }
+
+  .choice input:checked + span {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--on-navy);
+  }
+
+  .choice input:focus-visible + span {
+    outline: 3px solid var(--brass-bright);
+    outline-offset: 2px;
+  }
+
   .field {
     display: grid;
     align-content: start;
@@ -245,7 +301,8 @@ const uid = `f-${kind}`;
     min-width: 0;
   }
 
-  label {
+  label,
+  legend {
     font-size: 0.95rem;
     font-weight: 600;
     padding: 0;
